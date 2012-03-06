@@ -1,0 +1,21 @@
+﻿<Window x:Class="WpfApplication1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <ListView Height="270" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcListView" VerticalAlignment="Top" Width="480" HorizontalContentAlignment="Left">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
+                    <GridViewColumn Width="Auto" Header="Threads" DisplayMemberBinding="{Binding Path=Threads.Count}"/>
+                    <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=ProcessName}"/>
+                    <GridViewColumn Width="Auto" Header="App" DisplayMemberBinding="{Binding Path=MainModule.ModuleName}"/>
+                    <GridViewColumn Width="Auto" Header="MainWindow" DisplayMemberBinding="{Binding Path=MainWindowTitle}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,288,0,0" Name="ProcRefreshButton" VerticalAlignment="Top" Width="75" Click="ProcRefreshButton_Click" />
+        <Button Content="Create" Height="23" HorizontalAlignment="Left" Margin="155,288,0,0" Name="ProcCreateButton" VerticalAlignment="Top" Width="75" Click="ProcCreateButton_Click" />
+        <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="300,288,0,0" Name="ProcKillButton" VerticalAlignment="Top" Width="75" Click="ProcKillButton_Click" />
+    </Grid>
+</Window>
