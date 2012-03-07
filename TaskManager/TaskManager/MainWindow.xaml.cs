@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
-using System.Collections.ObjectModel;
+using System.Collections;
 
 namespace WpfApplication1
 {
@@ -24,8 +24,8 @@ namespace WpfApplication1
         public MainWindow()
         {
             InitializeComponent();
-            ListViewItem temp = new ListViewItem();
-            ObservableCollection<Process> ProcColl = new ObservableCollection<Process>();
+  //          ListViewItem temp = new ListViewItem();
+            List<Process> ProcColl = new List<Process>();
             foreach (Process proc in Process.GetProcesses())
             {
                 ProcColl.Add(proc);
@@ -35,8 +35,8 @@ namespace WpfApplication1
 
         private void ProcRefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            ListViewItem temp = new ListViewItem();
-            ObservableCollection<Process> ProcColl = new ObservableCollection<Process>();
+ //           ListViewItem temp = new ListViewItem();
+            List<Process> ProcColl = new List<Process>();
             foreach (Process proc in Process.GetProcesses())
             {
                 ProcColl.Add(proc);
@@ -64,6 +64,26 @@ namespace WpfApplication1
             catch (Exception)
             {
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void GridViewColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        {
+            List<Process> ProcColl = new List<Process>(ProcListView.ItemsSource as List<Process>);
+            ProcColl.Sort(new Comparison<Process>(delegate( Process a, Process b)
+            {
+                return String.Compare(a.ProcessName, b.ProcessName);
+            }));
+            ProcListView.ItemsSource = ProcColl;
+            /*switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString())
+            {
+                case "Name": ProcColl.ToArray
+            }*/
+
         }
     }
 }
