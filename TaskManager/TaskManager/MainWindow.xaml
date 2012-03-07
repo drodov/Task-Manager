@@ -3,27 +3,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="TaskManager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="470" MinHeight="530">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <StatusBar Height="23" HorizontalAlignment="Left" Name="statusBar1" VerticalAlignment="Bottom" Width="507" />
-        <TabControl HorizontalAlignment="Stretch" Name="tabControl1" VerticalAlignment="Stretch">
-            <TabItem Header="Processes" Name="ProcTabItem">
-                <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                    <ListView Height="400" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcListView" VerticalAlignment="Top" Width="480" HorizontalContentAlignment="Left"
-                                GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Width="Auto" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
-                                <GridViewColumn Width="Auto" Header="Threads" DisplayMemberBinding="{Binding Path=Threads.Count}"/>
-                                <GridViewColumn Width="Auto" Header="Name" DisplayMemberBinding="{Binding Path=ProcessName}"/>
-                                <GridViewColumn Width="Auto" Header="App" DisplayMemberBinding="{Binding Path=MainModule.ModuleName}"/>
-                                <GridViewColumn Width="Auto" Header="MainWindow" DisplayMemberBinding="{Binding Path=MainWindowTitle}"/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-                    <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,413,0,0" Name="ProcRefreshButton" VerticalAlignment="Top" Width="75" Click="ProcRefreshButton_Click" />
-                    <Button Content="Create" Height="23" HorizontalAlignment="Left" Margin="100,413,0,0" Name="ProcCreateButton" VerticalAlignment="Top" Width="75" Click="ProcCreateButton_Click" />
-                    <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="190,413,0,0" Name="ProcKillButton" VerticalAlignment="Top" Width="75" Click="ProcKillButton_Click" />
+        <StackPanel>
+            <TabControl HorizontalAlignment="Stretch" Name="TabControl1" VerticalAlignment="Stretch" TabStripPlacement="Left">
+                <TabItem Header="Apps" Height="80" Name="AppTabItem">
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <StackPanel>
+                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="AppListView" VerticalAlignment="Top" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="330" Header="Task" DisplayMemberBinding="{Binding Path=MainWindowTitle}"/>
+                                        <GridViewColumn Width="80" Header="Responding" DisplayMemberBinding="{Binding Path=Responding}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="AppRefreshButton" VerticalAlignment="Top" Width="75" Click="AppRefreshButton_Click" />
+                                <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="TaskStartButton" VerticalAlignment="Top" Width="75" Click="TaskStartButton_Click" />
+                                <Button Content="Close" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppCloseButton" VerticalAlignment="Top" Width="75" Click="AppCloseButton_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Processes" Height="80" Name="ProcTabItem">
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <StackPanel>
+                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ProcListView" VerticalAlignment="Top" HorizontalContentAlignment="Left"
+                                GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="100" Header="Name" DisplayMemberBinding="{Binding Path=ProcessName}"/>
+                                        <GridViewColumn Width="40" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
+                                        <GridViewColumn Width="50" Header="Threads" DisplayMemberBinding="{Binding Path=Threads.Count}"/>
+                                        <GridViewColumn Width="202" Header="File" DisplayMemberBinding="{Binding Path=MainModule.FileName}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcRefreshButton" VerticalAlignment="Top" Width="75" Click="ProcRefreshButton_Click" />
+                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="ProcKillButton" VerticalAlignment="Top" Width="75" Click="ProcKillButton_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+            <StatusBar Height="23" Margin="0,0,0,0" HorizontalAlignment="Stretch" Name="statusBar1">
+                <Grid>
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="Processes:" Margin="5,-5,0,0" Height="28" Name="ProcLabel" />
+                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="ProcCountLabel" VerticalAlignment="Top" />
+                        <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border1" Width="1" />
+                    </StackPanel>
                 </Grid>
-            </TabItem>
-        </TabControl>
+            </StatusBar>
+        </StackPanel>
     </Grid>
 </Window>
