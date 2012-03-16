@@ -13,3 +13,5 @@ C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\ob
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\TaskManager.exe
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\TaskManager.pdb
+C:\Users\Dmitry\Documents\Visual Studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\ShowProcInfoWindow.baml
+C:\Users\Dmitry\Documents\Visual Studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\ShowProcInfoWindow.g.cs

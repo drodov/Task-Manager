@@ -13,6 +13,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Collections;
+using TaskManager;
 
 namespace WpfApplication1
 {
@@ -46,6 +47,7 @@ namespace WpfApplication1
                 case 1: SortByName(ProcColl); break;
                 case 2: SortById(ProcColl); break;
                 case 3: SortByThreads(ProcColl); break;
+                case 4: SortByPrior(ProcColl); break;
                 default: break;
             }
             ProcListView.ItemsSource = ProcColl;
@@ -128,6 +130,7 @@ namespace WpfApplication1
                 case "name": FlagProcSort = 1; break;
                 case "id": FlagProcSort = 2; break;
                 case "threads": FlagProcSort = 3; break;
+                case "priority": FlagProcSort = 4; break;
                 default: FlagProcSort = 0; break;
             }
             ProcRefresh();
@@ -178,6 +181,19 @@ namespace WpfApplication1
             }));
         }
 
+        void SortByPrior(List<Process> lst)
+        {
+            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            {
+                if (a.BasePriority > b.BasePriority)
+                    return 1;
+                else if (a.BasePriority == b.BasePriority)
+                    return 0;
+                else
+                    return -1;
+            }));
+        }
+
         void SortByTask(List<Process> lst)
         {
             lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
@@ -197,6 +213,16 @@ namespace WpfApplication1
                 else 
                     return -1;
             }));
+        }
+
+        private void ProcListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Process ProcToView =  ProcListView.SelectedItem as Process;
+            if (ProcToView != null)
+            {
+                ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView);
+                ShwPrInfWind.ShowDialog();
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
                             <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="AppListView" VerticalAlignment="Top" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Width="330" Header="Task" DisplayMemberBinding="{Binding Path=MainWindowTitle}"/>
+                                        <GridViewColumn Width="330" Header="Apps" DisplayMemberBinding="{Binding Path=MainWindowTitle}"/>
                                         <GridViewColumn Width="80" Header="Responding" DisplayMemberBinding="{Binding Path=Responding}"/>
                                     </GridView>
                                 </ListView.View>
@@ -28,13 +28,13 @@
                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <StackPanel>
                             <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ProcListView" VerticalAlignment="Top" HorizontalContentAlignment="Left"
-                                GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler">
+                                GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler" MouseDoubleClick="ProcListView_MouseDoubleClick">
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Width="100" Header="Name" DisplayMemberBinding="{Binding Path=ProcessName}"/>
-                                        <GridViewColumn Width="40" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
-                                        <GridViewColumn Width="50" Header="Threads" DisplayMemberBinding="{Binding Path=Threads.Count}"/>
-                                        <GridViewColumn Width="202" Header="File" DisplayMemberBinding="{Binding Path=MainModule.FileName}"/>
+                                        <GridViewColumn Width="90" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
+                                        <GridViewColumn Width="100" Header="Threads" DisplayMemberBinding="{Binding Path=Threads.Count}"/>
+                                        <GridViewColumn Width="102" Header="Priority" DisplayMemberBinding="{Binding Path=BasePriority}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>
