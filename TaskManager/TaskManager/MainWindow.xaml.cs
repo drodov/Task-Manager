@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Collections;
 using TaskManager;
+using System.ServiceProcess;
 
 namespace WpfApplication1
 {
@@ -24,14 +25,16 @@ namespace WpfApplication1
     {
         List<Process> ProcColl;
         List<Process> AppColl;
+        List<ServiceController> ServColl;
         int FlagProcSort = 0;
         int FlagAppSort = 0;
+        int FlagServSort = 0;
         public MainWindow()
         {
             InitializeComponent();
             ProcRefresh();
             AppRefresh();
-
+            ServRefresh();
         }
 
         void ProcRefresh()
@@ -58,7 +61,7 @@ namespace WpfApplication1
             AppColl = new List<Process>();
             foreach (Process proc in Process.GetProcesses())
             {
-                if(proc.MainWindowTitle != "")
+                if (proc.MainWindowTitle != "")
                     AppColl.Add(proc);
             }
             switch (FlagAppSort)
@@ -70,6 +73,22 @@ namespace WpfApplication1
             AppListView.ItemsSource = AppColl;
         }
 
+        void ServRefresh()
+        {
+            ServColl = new List<ServiceController>();
+            foreach (ServiceController srvc in ServiceController.GetServices())
+            {
+                ServColl.Add(srvc);
+            }
+            switch (FlagServSort)
+            {
+                case 1: SortByName(ServColl); break;
+                case 2: SortByDescr(ServColl); break;
+                default: break;
+            }
+            ServListView.ItemsSource = ServColl;
+        }
+
         private void ProcRefreshButton_Click(object sender, RoutedEventArgs e)
         {
             ProcRefresh();
@@ -78,6 +97,11 @@ namespace WpfApplication1
         private void AppRefreshButton_Click(object sender, RoutedEventArgs e)
         {
             AppRefresh();
+        }
+
+        private void ServRefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            ServRefresh();
         }
 
         private void TaskStartButton_Click(object sender, RoutedEventArgs e)
@@ -147,6 +171,17 @@ namespace WpfApplication1
             AppRefresh();
         }
 
+        private void GridViewServColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
+        {
+            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
+            {
+                case "name": FlagServSort = 1; break;
+                case "description": FlagServSort = 2; break;
+                default: FlagServSort = 0; break;
+            }
+            ServRefresh();
+        }
+
         void SortByName(List<Process> lst)
         {
             lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
@@ -212,6 +247,22 @@ namespace WpfApplication1
                     return 1;
                 else 
                     return -1;
+            }));
+        }
+
+        void SortByName(List<ServiceController> lst)
+        {
+            lst.Sort(new Comparison<ServiceController>(delegate(ServiceController a, ServiceController b)
+            {
+                return String.Compare(a.ServiceName, b.ServiceName);
+            }));
+        }
+
+        void SortByDescr(List<ServiceController> lst)
+        {
+            lst.Sort(new Comparison<ServiceController>(delegate(ServiceController a, ServiceController b)
+            {
+                return String.Compare(a.DisplayName, b.DisplayName);
             }));
         }
 

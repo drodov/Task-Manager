@@ -45,6 +45,24 @@
                         </StackPanel>
                     </Grid>
                 </TabItem>
+                <TabItem Header="Services" Height="80" Name="ServTabItem">
+                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <StackPanel>
+                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ServListView" VerticalAlignment="Top" HorizontalContentAlignment="Left">
+                              <!-- GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler"> -->
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Width="205" Header="Name" DisplayMemberBinding="{Binding Path=ServiceName}"/>
+                                        <GridViewColumn Width="205" Header="Description" DisplayMemberBinding="{Binding Path=DisplayName}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ServRefreshButton" VerticalAlignment="Top" Width="75" Click="ServRefreshButton_Click" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
             </TabControl>
             <StatusBar Height="23" Margin="0,0,0,0" HorizontalAlignment="Stretch" Name="statusBar1">
                 <Grid>
