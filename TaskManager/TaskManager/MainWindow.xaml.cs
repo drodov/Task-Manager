@@ -15,7 +15,10 @@ using System.Diagnostics;
 using System.Collections;
 using TaskManager;
 using System.ServiceProcess;
+using System.Management;
+using System.Threading;
 
+ 
 namespace WpfApplication1
 {
     /// <summary>
@@ -45,6 +48,11 @@ namespace WpfApplication1
                 ProcColl.Add(proc);
             }
             ProcCountLabel.Content = ProcColl.Count.ToString();
+
+            System.Management.ManagementObjectSearcher man = new System.Management.ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor");
+            foreach (System.Management.ManagementObject obj in man.Get())
+                CPUPercentLabel.Content = obj["LoadPercentage"].ToString() + "%";
+
             switch (FlagProcSort)
             {
                 case 1: SortByName(ProcColl); break;
@@ -79,6 +87,8 @@ namespace WpfApplication1
             foreach (ServiceController srvc in ServiceController.GetServices())
             {
                 ServColl.Add(srvc);
+                ManagementObject MO = new ManagementObject(@"Win32_service.Name='" + srvc.ServiceName + "'");
+                //MessageBox.Show(MO.GetPropertyValue("ProcessID").ToString());
             }
             switch (FlagServSort)
             {

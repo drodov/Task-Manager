@@ -5,7 +5,19 @@
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <StackPanel>
             <TabControl HorizontalAlignment="Stretch" Name="TabControl1" VerticalAlignment="Stretch" TabStripPlacement="Left">
+                <TabControl.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#FFB6DDE8" Offset="0.004" />
+                        <GradientStop Color="#FF18B6EF" Offset="1" />
+                    </LinearGradientBrush>
+                </TabControl.Background>
                 <TabItem Header="Apps" Height="80" Name="AppTabItem">
+                    <TabItem.Background>
+                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                            <GradientStop Color="#FFA0DAEB" Offset="0" />
+                            <GradientStop Color="#FF0FB9EB" Offset="1" />
+                        </LinearGradientBrush>
+                    </TabItem.Background>
                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <StackPanel>
                             <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="AppListView" VerticalAlignment="Top" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
@@ -25,6 +37,12 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Processes" Height="80" Name="ProcTabItem">
+                    <TabItem.Background>
+                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                            <GradientStop Color="#FFA0DAEB" Offset="0" />
+                            <GradientStop Color="#FF0FB9EB" Offset="1" />
+                        </LinearGradientBrush>
+                    </TabItem.Background>
                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <StackPanel>
                             <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ProcListView" VerticalAlignment="Top" HorizontalContentAlignment="Left"
@@ -46,14 +64,21 @@
                     </Grid>
                 </TabItem>
                 <TabItem Header="Services" Height="80" Name="ServTabItem">
+                    <TabItem.Background>
+                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                            <GradientStop Color="#FFA0DAEB" Offset="0" />
+                            <GradientStop Color="#FF0FB9EB" Offset="1" />
+                        </LinearGradientBrush>
+                    </TabItem.Background>
                     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <StackPanel>
-                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ServListView" VerticalAlignment="Top" HorizontalContentAlignment="Left">
-                              <!-- GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler"> -->
+                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ServListView" VerticalAlignment="Top" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Width="205" Header="Name" DisplayMemberBinding="{Binding Path=ServiceName}"/>
-                                        <GridViewColumn Width="205" Header="Description" DisplayMemberBinding="{Binding Path=DisplayName}"/>
+                                        <GridViewColumn Width="146" Header="Name" DisplayMemberBinding="{Binding Path=ServiceName}"/>
+                                        <GridViewColumn Width="40" Header="ID"/>
+                                        <GridViewColumn Width="147" Header="Description" DisplayMemberBinding="{Binding Path=DisplayName}"/>
+                                        <GridViewColumn Width="60" Header="Status" DisplayMemberBinding="{Binding Path=Status}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>
@@ -70,9 +95,18 @@
                         <Label Content="Processes:" Margin="5,-5,0,0" Height="28" Name="ProcLabel" />
                         <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="ProcCountLabel" VerticalAlignment="Top" />
                         <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border1" Width="1" />
+                        <Label Content="CPU:" Margin="10,-5,0,0" Height="28" Name="CPULabel" />
+                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="CPUPercentLabel" VerticalAlignment="Top" />
+                        <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border2" Width="1" />
                     </StackPanel>
                 </Grid>
             </StatusBar>
         </StackPanel>
     </Grid>
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFF5FBFF" Offset="0.248" />
+            <GradientStop Color="#FF0D8BF5" Offset="1" />
+        </LinearGradientBrush>
+    </Window.Background>
 </Window>

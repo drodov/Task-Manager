@@ -43,13 +43,23 @@ namespace TaskManager
                 VirtualMemorySizeLabel.Content = ProcToView.VirtualMemorySize64;
                 WorkingSetLabel.Content = ProcToView.WorkingSet64;
             }
-            catch (Exception)
+            catch (Exception Ex)
             {
+                MessageBox.Show(Ex.Message);
             }
         }
 
         private void PriorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            switch((PriorComboBox.SelectedItem as ComboBoxItem).Content.ToString().ToLower())
+            {
+                case "idle": ProcToView.PriorityClass = ProcessPriorityClass.Idle; break;
+                case "normal": ProcToView.PriorityClass = ProcessPriorityClass.Normal; break;
+                case "abovenormal": ProcToView.PriorityClass = ProcessPriorityClass.AboveNormal; break;
+                case "belownormal": ProcToView.PriorityClass = ProcessPriorityClass.BelowNormal; break;
+                case "high": ProcToView.PriorityClass = ProcessPriorityClass.High; break;
+                case "realtime": ProcToView.PriorityClass = ProcessPriorityClass.RealTime; break;
+            }
         }
     }
 }
