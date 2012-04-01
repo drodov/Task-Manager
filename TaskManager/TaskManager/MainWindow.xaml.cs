@@ -13,13 +13,12 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Collections;
-using TaskManager;
 using System.ServiceProcess;
 using System.Management;
 using System.Threading;
 
- 
-namespace WpfApplication1
+
+namespace TaskManager
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,7 +27,7 @@ namespace WpfApplication1
     {
         List<Process> ProcColl;
         List<Process> AppColl;
-        List<ServiceController> ServColl;
+        List<CService> ServColl;
         int FlagProcSort = 0;
         int FlagAppSort = 0;
         int FlagServSort = 0;
@@ -83,17 +82,18 @@ namespace WpfApplication1
 
         void ServRefresh()
         {
-            ServColl = new List<ServiceController>();
+            ServColl = new List<CService>();
             foreach (ServiceController srvc in ServiceController.GetServices())
             {
-                ServColl.Add(srvc);
-                ManagementObject MO = new ManagementObject(@"Win32_service.Name='" + srvc.ServiceName + "'");
-                //MessageBox.Show(MO.GetPropertyValue("ProcessID").ToString());
+                CService s = new CService(srvc);
+                ServColl.Add(s);
             }
             switch (FlagServSort)
             {
                 case 1: SortByName(ServColl); break;
                 case 2: SortByDescr(ServColl); break;
+                case 3: SortByStatus(ServColl); break;
+                case 4: SortById(ServColl); break;
                 default: break;
             }
             ServListView.ItemsSource = ServColl;
@@ -187,6 +187,8 @@ namespace WpfApplication1
             {
                 case "name": FlagServSort = 1; break;
                 case "description": FlagServSort = 2; break;
+                case "status": FlagServSort = 3; break;
+                case "id": FlagServSort = 4; break;
                 default: FlagServSort = 0; break;
             }
             ServRefresh();
@@ -194,7 +196,7 @@ namespace WpfApplication1
 
         void SortByName(List<Process> lst)
         {
-            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            lst.Sort(new Comparison<Process>((Process a, Process b) =>
             {
                 return String.Compare(a.ProcessName, b.ProcessName);
             }));
@@ -202,7 +204,7 @@ namespace WpfApplication1
 
         void SortById(List<Process> lst)
         {
-            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            lst.Sort(new Comparison<Process>((Process a, Process b) =>
             {
                 if (a.Id > b.Id)
                     return 1;
@@ -215,7 +217,7 @@ namespace WpfApplication1
 
         void SortByThreads(List<Process> lst)
         {
-            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            lst.Sort(new Comparison<Process>((Process a, Process b) =>
             {
                 if (a.Threads.Count > b.Threads.Count)
                     return 1;
@@ -228,7 +230,7 @@ namespace WpfApplication1
 
         void SortByPrior(List<Process> lst)
         {
-            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            lst.Sort(new Comparison<Process>((Process a, Process b) =>
             {
                 if (a.BasePriority > b.BasePriority)
                     return 1;
@@ -241,7 +243,7 @@ namespace WpfApplication1
 
         void SortByTask(List<Process> lst)
         {
-            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            lst.Sort(new Comparison<Process>((Process a, Process b) =>
             {
                 return String.Compare(a.MainWindowTitle.ToString(), b.MainWindowTitle.ToString());
             }));
@@ -249,7 +251,7 @@ namespace WpfApplication1
 
         void SortByResp(List<Process> lst)
         {
-            lst.Sort(new Comparison<Process>(delegate(Process a, Process b)
+            lst.Sort(new Comparison<Process>((Process a, Process b) =>
             {
                 if (a.Responding == b.Responding)
                     return 0;
@@ -260,19 +262,40 @@ namespace WpfApplication1
             }));
         }
 
-        void SortByName(List<ServiceController> lst)
+        void SortByName(List<CService> lst)
         {
-            lst.Sort(new Comparison<ServiceController>(delegate(ServiceController a, ServiceController b)
+            lst.Sort(new Comparison<CService>((CService a, CService b) =>
             {
-                return String.Compare(a.ServiceName, b.ServiceName);
+                return String.Compare(a.Name, b.Name);
             }));
         }
 
-        void SortByDescr(List<ServiceController> lst)
+        void SortByDescr(List<CService> lst)
         {
-            lst.Sort(new Comparison<ServiceController>(delegate(ServiceController a, ServiceController b)
+            lst.Sort(new Comparison<CService>((CService a, CService b) =>
             {
-                return String.Compare(a.DisplayName, b.DisplayName);
+                return String.Compare(a.Description, b.Description);
+            }));
+        }
+
+        void SortByStatus(List<CService> lst)
+        {
+            lst.Sort(new Comparison<CService>((CService a, CService b) =>
+            {
+                return String.Compare(a.Status.ToString(), b.Status.ToString());
+            }));
+        }
+
+        void SortById(List<CService> lst)
+        {
+            lst.Sort(new Comparison<CService>((CService a, CService b) =>
+            {
+                if(a.Id > b.Id)
+                    return 1;
+                else if(a.Id == b.Id)
+                    return 0;
+                else
+                    return -1;
             }));
         }
 
