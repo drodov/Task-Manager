@@ -17,7 +17,6 @@ using System.ServiceProcess;
 using System.Management;
 using System.Threading;
 
-
 namespace TaskManager
 {
     /// <summary>
@@ -26,7 +25,8 @@ namespace TaskManager
     public partial class MainWindow : Window
     {
         List<Process> ProcColl;
-        List<Process> AppColl;
+        List<CApp> AppColl;
+        List<Process> AppColl1;
         List<CService> ServColl;
         int FlagProcSort = 0;
         int FlagAppSort = 0;
@@ -65,11 +65,19 @@ namespace TaskManager
 
         void AppRefresh()
         {
-            AppColl = new List<Process>();
+            AppColl1 = new List<Process>();
             foreach (Process proc in Process.GetProcesses())
             {
                 if (proc.MainWindowTitle != "")
-                    AppColl.Add(proc);
+                    AppColl1.Add(proc);
+            }
+            AppColl = new List<CApp>();
+            foreach (Process proc in Process.GetProcesses())
+            {
+                if (proc.MainWindowTitle != "")
+                {
+                    AppColl.Add(new CApp(proc));
+                }
             }
             switch (FlagAppSort)
             {
@@ -172,6 +180,8 @@ namespace TaskManager
 
         private void GridViewAppColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
+            if ((e.OriginalSource as GridViewColumnHeader).Content == null)
+                return;
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
                 case "task": FlagAppSort = 1; break;
@@ -241,23 +251,23 @@ namespace TaskManager
             }));
         }
 
-        void SortByTask(List<Process> lst)
+        void SortByTask(List<CApp> lst)
         {
-            lst.Sort(new Comparison<Process>((Process a, Process b) =>
+            lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
             {
-                return String.Compare(a.MainWindowTitle.ToString(), b.MainWindowTitle.ToString());
+                return String.Compare(a.Name, b.Name.ToString());
             }));
         }
 
-        void SortByResp(List<Process> lst)
+        void SortByResp(List<CApp> lst)
         {
-            lst.Sort(new Comparison<Process>((Process a, Process b) =>
+            lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
             {
-                if (a.Responding == b.Responding)
+                if (a.Status == b.Status)
                     return 0;
-                else if (a.Responding == false && b.Responding == true)
+                else if (a.Status == false && b.Status == true)
                     return 1;
-                else 
+                else
                     return -1;
             }));
         }
@@ -290,9 +300,9 @@ namespace TaskManager
         {
             lst.Sort(new Comparison<CService>((CService a, CService b) =>
             {
-                if(a.Id > b.Id)
+                if (a.Id > b.Id)
                     return 1;
-                else if(a.Id == b.Id)
+                else if (a.Id == b.Id)
                     return 0;
                 else
                     return -1;
@@ -301,7 +311,7 @@ namespace TaskManager
 
         private void ProcListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Process ProcToView =  ProcListView.SelectedItem as Process;
+            Process ProcToView = ProcListView.SelectedItem as Process;
             if (ProcToView != null)
             {
                 ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView);
