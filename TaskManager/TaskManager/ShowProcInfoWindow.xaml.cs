@@ -45,7 +45,7 @@ namespace TaskManager
             }
             catch (Exception Ex)
             {
-                MessageBox.Show(Ex.Message);
+                MessageBox.Show(Ex.Message + "\n.Запустите программу\nс правами администратора.");
             }
         }
 

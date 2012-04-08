@@ -16,6 +16,8 @@ using System.Collections;
 using System.ServiceProcess;
 using System.Management;
 using System.Threading;
+using System.ComponentModel;
+
 
 namespace TaskManager
 {
@@ -24,87 +26,81 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<Process> ProcColl;
-        List<CApp> AppColl;
-        List<Process> AppColl1;
-        List<CService> ServColl;
-        int FlagProcSort = 0;
-        int FlagAppSort = 0;
-        int FlagServSort = 0;
+        List<Process> _procColl;
+        List<CApp> _appColl;
+        List<CService> _servColl;
+        int _flagProcSort = 1;
+        int _flagAppSort = 1;
+        int _flagServSort = 1;
+        Boolean[] _directionProcSorting = new Boolean[4] { true, false, false, false };
+        Boolean[] _directionServSorting = new Boolean[4] { true, false, false, false };
+        Boolean[] _directionAppSorting = new Boolean[2] { true, false };
+        ListSortDirection _direction;
         public MainWindow()
         {
             InitializeComponent();
-            ProcRefresh();
-            AppRefresh();
-            ServRefresh();
         }
 
         void ProcRefresh()
         {
-            ProcColl = new List<Process>();
+            _procColl = new List<Process>();
             foreach (Process proc in Process.GetProcesses())
             {
-                ProcColl.Add(proc);
+                _procColl.Add(proc);
             }
-            ProcCountLabel.Content = ProcColl.Count.ToString();
+            ProcCountLabel.Content = _procColl.Count.ToString();
 
             System.Management.ManagementObjectSearcher man = new System.Management.ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor");
             foreach (System.Management.ManagementObject obj in man.Get())
                 CPUPercentLabel.Content = obj["LoadPercentage"].ToString() + "%";
 
-            switch (FlagProcSort)
+            switch (_flagProcSort)
             {
-                case 1: SortByName(ProcColl); break;
-                case 2: SortById(ProcColl); break;
-                case 3: SortByThreads(ProcColl); break;
-                case 4: SortByPrior(ProcColl); break;
+                case 1: SortByName(_procColl); break;
+                case 2: SortById(_procColl); break;
+                case 3: SortByThreads(_procColl); break;
+                case 4: SortByPrior(_procColl); break;
                 default: break;
             }
-            ProcListView.ItemsSource = ProcColl;
+            ProcListView.ItemsSource = _procColl;
         }
 
         void AppRefresh()
         {
-            AppColl1 = new List<Process>();
-            foreach (Process proc in Process.GetProcesses())
-            {
-                if (proc.MainWindowTitle != "")
-                    AppColl1.Add(proc);
-            }
-            AppColl = new List<CApp>();
+            _appColl = new List<CApp>();
             foreach (Process proc in Process.GetProcesses())
             {
                 if (proc.MainWindowTitle != "")
                 {
-                    AppColl.Add(new CApp(proc));
+                    _appColl.Add(new CApp(proc));
                 }
             }
-            switch (FlagAppSort)
+            switch (_flagAppSort)
             {
-                case 1: SortByTask(AppColl); break;
-                case 2: SortByResp(AppColl); break;
+                case 1: SortByTask(_appColl); break;
+                case 2: SortByResp(_appColl); break;
                 default: break;
             }
-            AppListView.ItemsSource = AppColl;
+            AppListView.ItemsSource = _appColl;
         }
 
         void ServRefresh()
         {
-            ServColl = new List<CService>();
+            _servColl = new List<CService>();
             foreach (ServiceController srvc in ServiceController.GetServices())
             {
                 CService s = new CService(srvc);
-                ServColl.Add(s);
+                _servColl.Add(s);
             }
-            switch (FlagServSort)
+            switch (_flagServSort)
             {
-                case 1: SortByName(ServColl); break;
-                case 2: SortByDescr(ServColl); break;
-                case 3: SortByStatus(ServColl); break;
-                case 4: SortById(ServColl); break;
+                case 1: SortByName(_servColl); break;
+                case 2: SortByDescr(_servColl); break;
+                case 3: SortByStatus(_servColl); break;
+                case 4: SortById(_servColl); break;
                 default: break;
             }
-            ServListView.ItemsSource = ServColl;
+            ServListView.ItemsSource = _servColl;
         }
 
         private void ProcRefreshButton_Click(object sender, RoutedEventArgs e)
@@ -169,39 +165,254 @@ namespace TaskManager
         {
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
-                case "name": FlagProcSort = 1; break;
-                case "id": FlagProcSort = 2; break;
-                case "threads": FlagProcSort = 3; break;
-                case "priority": FlagProcSort = 4; break;
-                default: FlagProcSort = 0; break;
+                case "name":
+                    ProcListView.Items.SortDescriptions.Clear();
+                    if (_flagProcSort == 1 && _directionProcSorting[0] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionProcSorting[0] = false;
+                    }
+                    else if (_flagProcSort == 1 && _directionProcSorting[0] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[0] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[0] = true;
+                    }
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("ProcessName", _direction));
+                    _flagProcSort = 1;
+                    break;
+                case "id":
+                    ProcListView.Items.SortDescriptions.Clear();
+                    if (_flagProcSort == 2 && _directionProcSorting[1] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionProcSorting[1] = false;
+                    }
+                    else if (_flagProcSort == 2 && _directionProcSorting[1] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[1] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[1] = true;
+                    }
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("Id", _direction));
+                    _flagProcSort = 2;
+                    break;
+                case "threads":
+                    ProcListView.Items.SortDescriptions.Clear();
+                    if (_flagProcSort == 3 && _directionProcSorting[2] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionProcSorting[2] = false;
+                    }
+                    else if (_flagProcSort == 3 && _directionProcSorting[2] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[2] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[2] = true;
+                    }
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("Threads.Count", _direction));
+                    _flagProcSort = 3;
+                    break;
+                case "priority":
+                    ProcListView.Items.SortDescriptions.Clear();
+                    if (_flagProcSort == 4 && _directionProcSorting[3] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionProcSorting[3] = false;
+                    }
+                    else if (_flagProcSort == 4 && _directionProcSorting[3] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[3] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[3] = true;
+                    }
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("BasePriority", _direction));
+                    _flagProcSort = 4;
+                    break;
+                default: break;
             }
-            ProcRefresh();
+            /*
+            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
+            {
+                case "name": _flagProcSort = 1; break;
+                case "id": _flagProcSort = 2; break;
+                case "threads": _flagProcSort = 3; break;
+                case "priority": _flagProcSort = 4; break;
+                default: _flagProcSort = 0; break;
+            }
+            ProcRefresh();*/
         }
 
         private void GridViewAppColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
+            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
+            {
+                case "apps":
+                    AppListView.Items.SortDescriptions.Clear();
+                    if (_flagAppSort == 1 && _directionAppSorting[0] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionAppSorting[0] = false;
+                    }
+                    else if (_flagAppSort == 1 && _directionAppSorting[0] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionAppSorting[0] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionAppSorting[0] = true;
+                    }
+                    AppListView.Items.SortDescriptions.Add(new SortDescription("Name", _direction));
+                    _flagAppSort = 1;
+                    break;
+                case "responding":
+                    AppListView.Items.SortDescriptions.Clear();
+                    if (_flagAppSort == 2 && _directionAppSorting[1] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionAppSorting[1] = false;
+                    }
+                    else if (_flagAppSort == 2 && _directionAppSorting[1] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionAppSorting[1] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionAppSorting[1] = true;
+                    }
+                    AppListView.Items.SortDescriptions.Add(new SortDescription("Status", _direction));
+                    _flagAppSort = 2;
+                    break;
+                default: break;
+            }
+            /*
             if ((e.OriginalSource as GridViewColumnHeader).Content == null)
                 return;
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
-                case "task": FlagAppSort = 1; break;
-                case "responding": FlagAppSort = 2; break;
-                default: FlagAppSort = 0; break;
+                case "task": _flagAppSort = 1; break;
+                case "responding": _flagAppSort = 2; break;
+                default: _flagAppSort = 0; break;
             }
-            AppRefresh();
+            AppRefresh();*/
         }
 
         private void GridViewServColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
-                case "name": FlagServSort = 1; break;
-                case "description": FlagServSort = 2; break;
-                case "status": FlagServSort = 3; break;
-                case "id": FlagServSort = 4; break;
-                default: FlagServSort = 0; break;
+                case "name":
+                    ServListView.Items.SortDescriptions.Clear();
+                    if (_flagServSort == 1 && _directionServSorting[0] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionServSorting[0] = false;
+                    }
+                    else if (_flagServSort == 1 && _directionServSorting[0] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[0] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[0] = true;
+                    }
+                    ServListView.Items.SortDescriptions.Add(new SortDescription("Name", _direction));
+                    _flagServSort = 1;
+                    break;
+                case "id":
+                    ServListView.Items.SortDescriptions.Clear();
+                    if (_flagServSort == 2 && _directionServSorting[1] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionServSorting[1] = false;
+                    }
+                    else if (_flagServSort == 2 && _directionServSorting[1] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[1] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[1] = true;
+                    }
+                    ServListView.Items.SortDescriptions.Add(new SortDescription("Id", _direction));
+                    _flagServSort = 2;
+                    break;
+                case "description":
+                    ServListView.Items.SortDescriptions.Clear();
+                    if (_flagServSort == 3 && _directionServSorting[2] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionServSorting[2] = false;
+                    }
+                    else if (_flagServSort == 3 && _directionServSorting[2] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[2] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[2] = true;
+                    }
+                    ServListView.Items.SortDescriptions.Add(new SortDescription("Description", _direction));
+                    _flagServSort = 3;
+                    break;
+                case "status":
+                    ServListView.Items.SortDescriptions.Clear();
+                    if (_flagServSort == 4 && _directionServSorting[3] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionServSorting[3] = false;
+                    }
+                    else if (_flagServSort == 4 && _directionServSorting[3] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[3] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionServSorting[3] = true;
+                    }
+                    ServListView.Items.SortDescriptions.Add(new SortDescription("Status", _direction));
+                    _flagServSort = 4;
+                    break;
+                default: break;
             }
-            ServRefresh();
+            /*
+            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
+            {
+                case "name": _flagServSort = 1; break;
+                case "description": _flagServSort = 2; break;
+                case "status": _flagServSort = 3; break;
+                case "id": _flagServSort = 4; break;
+                default: _flagServSort = 0; break;
+            }
+            ServRefresh();*/
         }
 
         void SortByName(List<Process> lst)
@@ -317,6 +528,13 @@ namespace TaskManager
                 ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView);
                 ShwPrInfWind.ShowDialog();
             }
+        }
+
+        private void Window_Initialized(object sender, EventArgs e)
+        {
+            ProcRefresh();
+            AppRefresh();
+            ServRefresh();
         }
     }
 }

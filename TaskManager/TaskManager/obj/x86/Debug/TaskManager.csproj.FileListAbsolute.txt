@@ -5,7 +5,6 @@ C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\ob
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\MainWindow.g.cs
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\ShowProcInfoWindow.g.cs
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\App.g.cs
-C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\TaskManager_MarkupCompile.cache
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\bin\Debug\TaskManager.exe
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\bin\Debug\TaskManager.pdb
@@ -16,4 +15,20 @@ C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\ob
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\GenerateResource.write.1.tlog
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\TaskManager.exe
 C:\Users\Dmitry\documents\visual studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\TaskManager.pdb
-C:\Users\Dmitry\Documents\Visual Studio 2010\Projects\TaskManager\TaskManager\obj\x86\Debug\TaskManager_MarkupCompile.lref
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\TaskManager.exe
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\TaskManager.pdb
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\bin\Debug\TaskManager.exe
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\bin\Debug\TaskManager.pdb
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\CreatProcWindow.baml
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\MainWindow.baml
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\ShowProcInfoWindow.baml
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\CreatProcWindow.g.cs
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\MainWindow.g.cs
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\ShowProcInfoWindow.g.cs
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\App.g.cs
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\TaskManager_MarkupCompile.cache
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\TaskManager.g.resources
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\TaskManager.Properties.Resources.resources
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\Dmitry\Task-Manager\TaskManager\TaskManager\obj\x86\Debug\GenerateResource.write.1.tlog
