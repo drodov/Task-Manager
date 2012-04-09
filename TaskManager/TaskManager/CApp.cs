@@ -12,11 +12,13 @@ namespace TaskManager
 {
     class CApp
     {
+        public int Id { set; get; }
         public string Name { set; get; }
         public bool Status { set; get; }
         public BitmapImage AppIcon { set; get; }
         public CApp(Process proc)
         {
+            Id = proc.Id;
             Name = proc.MainWindowTitle;
             Status = proc.Responding;
             AppIcon = Icon.ExtractAssociatedIcon(proc.MainModule.FileName).ToBitmap().ToBitmapImage();

@@ -36,6 +36,7 @@ namespace TaskManager
         Boolean[] _directionServSorting = new Boolean[4] { true, false, false, false };
         Boolean[] _directionAppSorting = new Boolean[2] { true, false };
         ListSortDirection _direction;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -141,11 +142,26 @@ namespace TaskManager
             }
         }
 
+        private void AppKillButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process AppToKill = Process.GetProcessById((AppListView.SelectedItem as CApp).Id);
+                if (AppToKill == null)
+                    return;
+                AppToKill.Kill();
+                AppRefresh();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         private void AppCloseButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Process ProcToClose = (Process)AppListView.SelectedItem;
+                Process ProcToClose = Process.GetProcessById((AppListView.SelectedItem as CApp).Id);
                 if (ProcToClose == null)
                     return;
                 ProcToClose.CloseMainWindow();
