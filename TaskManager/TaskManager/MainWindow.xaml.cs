@@ -26,44 +26,46 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<Process> _procColl;
+        List<Proc> _procColl;
         List<CApp> _appColl;
         List<CService> _servColl;
         int _flagProcSort = 1;
         int _flagAppSort = 1;
         int _flagServSort = 1;
-        Boolean[] _directionProcSorting = new Boolean[4] { true, false, false, false };
+        Boolean[] _directionProcSorting = new Boolean[6] { true, false, false, false, false, false };
         Boolean[] _directionServSorting = new Boolean[4] { true, false, false, false };
         Boolean[] _directionAppSorting = new Boolean[2] { true, false };
         ListSortDirection _direction;
 
         public MainWindow()
         {
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
             InitializeComponent();
         }
 
         void ProcRefresh()
         {
-            _procColl = new List<Process>();
+            _procColl = new List<Proc>();
             foreach (Process proc in Process.GetProcesses())
             {
-                _procColl.Add(proc);
+                _procColl.Add(new Proc(proc));
             }
             ProcCountLabel.Content = _procColl.Count.ToString();
 
             System.Management.ManagementObjectSearcher man = new System.Management.ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor");
             foreach (System.Management.ManagementObject obj in man.Get())
                 CPUPercentLabel.Content = obj["LoadPercentage"].ToString() + "%";
-
-            switch (_flagProcSort)
+            ProcListView.ItemsSource = _procColl;
+           /* switch (_flagProcSort)
             {
                 case 1: SortByName(_procColl); break;
                 case 2: SortById(_procColl); break;
                 case 3: SortByThreads(_procColl); break;
                 case 4: SortByPrior(_procColl); break;
+                case 5: SortByThreads(_procColl); break;
+                case 6: SortByPrior(_procColl); break;
                 default: break;
-            }
-            ProcListView.ItemsSource = _procColl;
+            }*/
         }
 
         void AppRefresh()
@@ -71,17 +73,18 @@ namespace TaskManager
             _appColl = new List<CApp>();
             foreach (Process proc in Process.GetProcesses())
             {
+                string[] argList = new string[] { string.Empty };
                 if (proc.MainWindowTitle != "")
                 {
                     _appColl.Add(new CApp(proc));
                 }
-            }
+            }/*
             switch (_flagAppSort)
             {
                 case 1: SortByTask(_appColl); break;
                 case 2: SortByResp(_appColl); break;
                 default: break;
-            }
+            }*/
             AppListView.ItemsSource = _appColl;
         }
 
@@ -92,7 +95,7 @@ namespace TaskManager
             {
                 CService s = new CService(srvc);
                 _servColl.Add(s);
-            }
+            }/*
             switch (_flagServSort)
             {
                 case 1: SortByName(_servColl); break;
@@ -100,7 +103,7 @@ namespace TaskManager
                 case 3: SortByStatus(_servColl); break;
                 case 4: SortById(_servColl); break;
                 default: break;
-            }
+            }*/
             ServListView.ItemsSource = _servColl;
         }
 
@@ -131,7 +134,7 @@ namespace TaskManager
         {
             try
             {
-                Process ProcToKill = (Process)ProcListView.SelectedItem;
+                Process ProcToKill = (Process)(Proc)ProcListView.SelectedItem;
                 if (ProcToKill == null)
                     return;
                 ProcToKill.Kill();
@@ -198,7 +201,7 @@ namespace TaskManager
                         _direction = ListSortDirection.Ascending;
                         _directionProcSorting[0] = true;
                     }
-                    ProcListView.Items.SortDescriptions.Add(new SortDescription("ProcessName", _direction));
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("Name", _direction));
                     _flagProcSort = 1;
                     break;
                 case "id":
@@ -238,7 +241,7 @@ namespace TaskManager
                         _direction = ListSortDirection.Ascending;
                         _directionProcSorting[2] = true;
                     }
-                    ProcListView.Items.SortDescriptions.Add(new SortDescription("Threads.Count", _direction));
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("ThreadsCount", _direction));
                     _flagProcSort = 3;
                     break;
                 case "priority":
@@ -258,8 +261,48 @@ namespace TaskManager
                         _direction = ListSortDirection.Ascending;
                         _directionProcSorting[3] = true;
                     }
-                    ProcListView.Items.SortDescriptions.Add(new SortDescription("BasePriority", _direction));
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("Priority", _direction));
                     _flagProcSort = 4;
+                    break;
+                case "description":
+                    ProcListView.Items.SortDescriptions.Clear();
+                    if (_flagProcSort == 5 && _directionProcSorting[4] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionProcSorting[4] = false;
+                    }
+                    else if (_flagProcSort == 5 && _directionProcSorting[4] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[4] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[4] = true;
+                    }
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("Description", _direction));
+                    _flagProcSort = 5;
+                    break;
+                case "user":
+                    ProcListView.Items.SortDescriptions.Clear();
+                    if (_flagProcSort == 6 && _directionProcSorting[5] == true)
+                    {
+                        _direction = ListSortDirection.Descending;
+                        _directionProcSorting[5] = false;
+                    }
+                    else if (_flagProcSort == 6 && _directionProcSorting[5] == false)
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[5] = true;
+                    }
+                    else
+                    {
+                        _direction = ListSortDirection.Ascending;
+                        _directionProcSorting[5] = true;
+                    }
+                    ProcListView.Items.SortDescriptions.Add(new SortDescription("User", _direction));
+                    _flagProcSort = 6;
                     break;
                 default: break;
             }
@@ -430,18 +473,18 @@ namespace TaskManager
             }
             ServRefresh();*/
         }
-
-        void SortByName(List<Process> lst)
+/*
+        void SortByName(List<Proc> lst)
         {
-            lst.Sort(new Comparison<Process>((Process a, Process b) =>
+            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
             {
-                return String.Compare(a.ProcessName, b.ProcessName);
+                return String.Compare(a.Name, b.Name);
             }));
         }
 
-        void SortById(List<Process> lst)
+        void SortById(List<Proc> lst)
         {
-            lst.Sort(new Comparison<Process>((Process a, Process b) =>
+            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
             {
                 if (a.Id > b.Id)
                     return 1;
@@ -452,26 +495,26 @@ namespace TaskManager
             }));
         }
 
-        void SortByThreads(List<Process> lst)
+        void SortByThreads(List<Proc> lst)
         {
-            lst.Sort(new Comparison<Process>((Process a, Process b) =>
+            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
             {
-                if (a.Threads.Count > b.Threads.Count)
+                if (a.ThreadsCount > b.ThreadsCount)
                     return 1;
-                else if (a.Threads.Count == b.Threads.Count)
+                else if (a.ThreadsCount == b.ThreadsCount)
                     return 0;
                 else
                     return -1;
             }));
         }
 
-        void SortByPrior(List<Process> lst)
+        void SortByPrior(List<Proc> lst)
         {
-            lst.Sort(new Comparison<Process>((Process a, Process b) =>
+            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
             {
-                if (a.BasePriority > b.BasePriority)
+                if (a.Priority > b.Priority)
                     return 1;
-                else if (a.BasePriority == b.BasePriority)
+                else if (a.Priority == b.Priority)
                     return 0;
                 else
                     return -1;
@@ -534,15 +577,22 @@ namespace TaskManager
                 else
                     return -1;
             }));
-        }
+        }*/
 
         private void ProcListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            Process ProcToView = ProcListView.SelectedItem as Process;
-            if (ProcToView != null)
+            try
             {
-                ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView);
-                ShwPrInfWind.ShowDialog();
+                Process ProcToView = (Process)(ProcListView.SelectedItem as Proc);
+                if (ProcToView != null)
+                {
+                    ProcToView.PriorityClass.ToString();
+                    ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView);
+                    ShwPrInfWind.ShowDialog();
+                }
+            }
+            catch (Exception)
+            {
             }
         }
 

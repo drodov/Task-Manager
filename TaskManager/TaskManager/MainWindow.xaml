@@ -1,7 +1,7 @@
 ﻿<Window x:Class="TaskManager.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="TaskManager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="470" MinHeight="530" Initialized="Window_Initialized">
+        Title="Task Manager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="470" MinHeight="530" Initialized="Window_Initialized">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <StackPanel>
             <TabControl HorizontalAlignment="Stretch" Name="TabControl1" VerticalAlignment="Stretch" TabStripPlacement="Left">
@@ -59,10 +59,12 @@
                                 GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler" MouseDoubleClick="ProcListView_MouseDoubleClick">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Width="100" Header="Name" DisplayMemberBinding="{Binding Path=ProcessName}"/>
-                                        <GridViewColumn Width="90" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
-                                        <GridViewColumn Width="100" Header="Threads" DisplayMemberBinding="{Binding Path=Threads.Count}"/>
-                                        <GridViewColumn Width="102" Header="Priority" DisplayMemberBinding="{Binding Path=BasePriority}"/>
+                                        <GridViewColumn Width="75" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                        <GridViewColumn Width="55" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
+                                        <GridViewColumn Width="30" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
+                                        <GridViewColumn Width="30" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
+                                        <GridViewColumn Width="102" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
+                                        <GridViewColumn Width="100" Header="User" DisplayMemberBinding="{Binding Path=User}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>

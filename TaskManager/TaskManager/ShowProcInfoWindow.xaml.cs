@@ -22,10 +22,10 @@ namespace TaskManager
         Process ProcToView;
         public ShowProcInfoWindow(Process SelectedProc)
         {
-            InitializeComponent();
-            ProcToView = SelectedProc;
-            try
-            {
+            //try
+            //{
+                InitializeComponent();
+                ProcToView = SelectedProc;
                 foreach (ComboBoxItem val in PriorComboBox.Items)
                 {
                     if (val.Content.ToString() == ProcToView.PriorityClass.ToString())
@@ -42,11 +42,11 @@ namespace TaskManager
                 PrivateMemorySizeLabel.Content = ProcToView.PrivateMemorySize64;
                 VirtualMemorySizeLabel.Content = ProcToView.VirtualMemorySize64;
                 WorkingSetLabel.Content = ProcToView.WorkingSet64;
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show(Ex.Message + ".\nЗапустите программу\nс правами администратора.");
-            }
+            //}
+            //catch (Exception Ex)
+            //{
+            //    MessageBox.Show(Ex.Message + ".\nОтсуствуют права.");
+            //}
         }
 
         private void PriorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -88,6 +88,7 @@
     </ApplicationDefinition>
     <Compile Include="CApp.cs" />
     <Compile Include="CExtensions.cs" />
+    <Compile Include="Proc.cs" />
     <Compile Include="ShowProcInfoWindow.xaml.cs">
       <DependentUpon>ShowProcInfoWindow.xaml</DependentUpon>
     </Compile>
