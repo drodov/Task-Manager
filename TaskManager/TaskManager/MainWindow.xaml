@@ -1,10 +1,11 @@
 ﻿<Window x:Class="TaskManager.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Task Manager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="470" MinHeight="530" Initialized="Window_Initialized">
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        Title="Task Manager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="525" MinHeight="530" Initialized="Window_Initialized" >
+    <Grid>
         <StackPanel>
-            <TabControl HorizontalAlignment="Stretch" Name="TabControl1" VerticalAlignment="Stretch" TabStripPlacement="Left">
+            <TabControl Name="TabControl1" TabStripPlacement="Left">
                 <TabControl.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFB6DDE8" Offset="0.004" />
@@ -18,13 +19,13 @@
                             <GradientStop Color="#FF0FB9EB" Offset="1" />
                         </LinearGradientBrush>
                     </TabItem.Background>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid>
                         <StackPanel>
-                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="AppListView" VerticalAlignment="Top" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
+                            <ListView Height="415" Margin="10,10,0,0" Name="AppListView" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
                                 <ListView.View>
                                     <GridView>
                                         <GridView.Columns>
-                                            <GridViewColumn  Width="25">
+                                            <GridViewColumn Width="25">
                                                 <GridViewColumn.CellTemplate>
                                                     <DataTemplate>
                                                         <Image  Source="{Binding AppIcon}"/>
@@ -37,11 +38,11 @@
                                     </GridView>
                                 </ListView.View>
                             </ListView>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="AppRefreshButton" VerticalAlignment="Top" Width="75" Click="AppRefreshButton_Click" />
-                                <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="TaskStartButton" VerticalAlignment="Top" Width="75" Click="TaskStartButton_Click" />
-                                <Button Content="Close" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppCloseButton" VerticalAlignment="Top" Width="75" Click="AppCloseButton_Click" />
-                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppKillButton" VerticalAlignment="Top" Width="75" Click="AppKillButton_Click" />
+                            <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" >
+                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="AppRefreshButton"  Width="75" Click="AppRefreshButton_Click" />
+                                <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="TaskStartButton"  Width="75" Click="TaskStartButton_Click" />
+                                <Button Content="Close" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppCloseButton"  Width="75" Click="AppCloseButton_Click" />
+                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppKillButton"  Width="75" Click="AppKillButton_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -53,9 +54,9 @@
                             <GradientStop Color="#FF0FB9EB" Offset="1" />
                         </LinearGradientBrush>
                     </TabItem.Background>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid>
                         <StackPanel>
-                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ProcListView" VerticalAlignment="Top" HorizontalContentAlignment="Left"
+                            <ListView Height="415"  Margin="10,10,0,0" Name="ProcListView"  HorizontalContentAlignment="Left"
                                 GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler" MouseDoubleClick="ProcListView_MouseDoubleClick">
                                 <ListView.View>
                                     <GridView>
@@ -69,8 +70,8 @@
                                 </ListView.View>
                             </ListView>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcRefreshButton" VerticalAlignment="Top" Width="75" Click="ProcRefreshButton_Click" />
-                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="ProcKillButton" VerticalAlignment="Top" Width="75" Click="ProcKillButton_Click" />
+                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcRefreshButton"  Width="75" Click="ProcRefreshButton_Click" />
+                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -82,9 +83,9 @@
                             <GradientStop Color="#FF0FB9EB" Offset="1" />
                         </LinearGradientBrush>
                     </TabItem.Background>
-                    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Grid>
                         <StackPanel>
-                            <ListView Height="400" HorizontalAlignment="Stretch" Margin="10,10,0,0" Name="ServListView" VerticalAlignment="Top" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler">
+                            <ListView Height="415"  Margin="10,10,0,0" Name="ServListView"  HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler">
                                 <ListView.View>
                                     <GridView>
                                         <GridViewColumn Width="146" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
@@ -95,25 +96,25 @@
                                 </ListView.View>
                             </ListView>
                             <StackPanel Orientation="Horizontal">
-                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ServRefreshButton" VerticalAlignment="Top" Width="75" Click="ServRefreshButton_Click" />
+                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ServRefreshButton"  Width="75" Click="ServRefreshButton_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
                 </TabItem>
             </TabControl>
-            <StatusBar Height="23" Margin="0,0,0,0" HorizontalAlignment="Stretch" Name="statusBar1">
+        </StackPanel>
+            <StatusBar Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
                 <Grid>
                     <StackPanel Orientation="Horizontal">
                         <Label Content="Processes:" Margin="5,-5,0,0" Height="28" Name="ProcLabel" />
-                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="ProcCountLabel" VerticalAlignment="Top" />
+                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="ProcCountLabel"  />
                         <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border1" Width="1" />
                         <Label Content="CPU:" Margin="10,-5,0,0" Height="28" Name="CPULabel" />
-                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="CPUPercentLabel" VerticalAlignment="Top" />
+                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="CPUPercentLabel"  />
                         <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border2" Width="1" />
                     </StackPanel>
                 </Grid>
             </StatusBar>
-        </StackPanel>
     </Grid>
     <Window.Background>
         <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">

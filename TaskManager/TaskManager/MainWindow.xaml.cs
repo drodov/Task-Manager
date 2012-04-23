@@ -56,16 +56,16 @@ namespace TaskManager
             foreach (System.Management.ManagementObject obj in man.Get())
                 CPUPercentLabel.Content = obj["LoadPercentage"].ToString() + "%";
             ProcListView.ItemsSource = _procColl;
-           /* switch (_flagProcSort)
-            {
-                case 1: SortByName(_procColl); break;
-                case 2: SortById(_procColl); break;
-                case 3: SortByThreads(_procColl); break;
-                case 4: SortByPrior(_procColl); break;
-                case 5: SortByThreads(_procColl); break;
-                case 6: SortByPrior(_procColl); break;
-                default: break;
-            }*/
+            /* switch (_flagProcSort)
+             {
+                 case 1: SortByName(_procColl); break;
+                 case 2: SortById(_procColl); break;
+                 case 3: SortByThreads(_procColl); break;
+                 case 4: SortByPrior(_procColl); break;
+                 case 5: SortByThreads(_procColl); break;
+                 case 6: SortByPrior(_procColl); break;
+                 default: break;
+             }*/
         }
 
         void AppRefresh()
@@ -182,6 +182,8 @@ namespace TaskManager
 
         private void GridViewProcColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
+            if (e.OriginalSource as GridViewColumnHeader == null)
+                return;
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
                 case "name":
@@ -320,6 +322,10 @@ namespace TaskManager
 
         private void GridViewAppColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
+            if (e.OriginalSource as GridViewColumnHeader == null)
+                return;
+            if ((e.OriginalSource as GridViewColumnHeader).Content == null)
+                return;
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
                 case "apps":
@@ -378,6 +384,8 @@ namespace TaskManager
 
         private void GridViewServColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
+            if (e.OriginalSource as GridViewColumnHeader == null)
+                return;
             switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
             {
                 case "name":
@@ -473,111 +481,111 @@ namespace TaskManager
             }
             ServRefresh();*/
         }
-/*
-        void SortByName(List<Proc> lst)
-        {
-            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-            {
-                return String.Compare(a.Name, b.Name);
-            }));
-        }
+        /*
+                void SortByName(List<Proc> lst)
+                {
+                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
+                    {
+                        return String.Compare(a.Name, b.Name);
+                    }));
+                }
 
-        void SortById(List<Proc> lst)
-        {
-            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-            {
-                if (a.Id > b.Id)
-                    return 1;
-                else if (a.Id == b.Id)
-                    return 0;
-                else
-                    return -1;
-            }));
-        }
+                void SortById(List<Proc> lst)
+                {
+                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
+                    {
+                        if (a.Id > b.Id)
+                            return 1;
+                        else if (a.Id == b.Id)
+                            return 0;
+                        else
+                            return -1;
+                    }));
+                }
 
-        void SortByThreads(List<Proc> lst)
-        {
-            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-            {
-                if (a.ThreadsCount > b.ThreadsCount)
-                    return 1;
-                else if (a.ThreadsCount == b.ThreadsCount)
-                    return 0;
-                else
-                    return -1;
-            }));
-        }
+                void SortByThreads(List<Proc> lst)
+                {
+                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
+                    {
+                        if (a.ThreadsCount > b.ThreadsCount)
+                            return 1;
+                        else if (a.ThreadsCount == b.ThreadsCount)
+                            return 0;
+                        else
+                            return -1;
+                    }));
+                }
 
-        void SortByPrior(List<Proc> lst)
-        {
-            lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-            {
-                if (a.Priority > b.Priority)
-                    return 1;
-                else if (a.Priority == b.Priority)
-                    return 0;
-                else
-                    return -1;
-            }));
-        }
+                void SortByPrior(List<Proc> lst)
+                {
+                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
+                    {
+                        if (a.Priority > b.Priority)
+                            return 1;
+                        else if (a.Priority == b.Priority)
+                            return 0;
+                        else
+                            return -1;
+                    }));
+                }
 
-        void SortByTask(List<CApp> lst)
-        {
-            lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
-            {
-                return String.Compare(a.Name, b.Name.ToString());
-            }));
-        }
+                void SortByTask(List<CApp> lst)
+                {
+                    lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
+                    {
+                        return String.Compare(a.Name, b.Name.ToString());
+                    }));
+                }
 
-        void SortByResp(List<CApp> lst)
-        {
-            lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
-            {
-                if (a.Status == b.Status)
-                    return 0;
-                else if (a.Status == false && b.Status == true)
-                    return 1;
-                else
-                    return -1;
-            }));
-        }
+                void SortByResp(List<CApp> lst)
+                {
+                    lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
+                    {
+                        if (a.Status == b.Status)
+                            return 0;
+                        else if (a.Status == false && b.Status == true)
+                            return 1;
+                        else
+                            return -1;
+                    }));
+                }
 
-        void SortByName(List<CService> lst)
-        {
-            lst.Sort(new Comparison<CService>((CService a, CService b) =>
-            {
-                return String.Compare(a.Name, b.Name);
-            }));
-        }
+                void SortByName(List<CService> lst)
+                {
+                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
+                    {
+                        return String.Compare(a.Name, b.Name);
+                    }));
+                }
 
-        void SortByDescr(List<CService> lst)
-        {
-            lst.Sort(new Comparison<CService>((CService a, CService b) =>
-            {
-                return String.Compare(a.Description, b.Description);
-            }));
-        }
+                void SortByDescr(List<CService> lst)
+                {
+                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
+                    {
+                        return String.Compare(a.Description, b.Description);
+                    }));
+                }
 
-        void SortByStatus(List<CService> lst)
-        {
-            lst.Sort(new Comparison<CService>((CService a, CService b) =>
-            {
-                return String.Compare(a.Status.ToString(), b.Status.ToString());
-            }));
-        }
+                void SortByStatus(List<CService> lst)
+                {
+                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
+                    {
+                        return String.Compare(a.Status.ToString(), b.Status.ToString());
+                    }));
+                }
 
-        void SortById(List<CService> lst)
-        {
-            lst.Sort(new Comparison<CService>((CService a, CService b) =>
-            {
-                if (a.Id > b.Id)
-                    return 1;
-                else if (a.Id == b.Id)
-                    return 0;
-                else
-                    return -1;
-            }));
-        }*/
+                void SortById(List<CService> lst)
+                {
+                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
+                    {
+                        if (a.Id > b.Id)
+                            return 1;
+                        else if (a.Id == b.Id)
+                            return 0;
+                        else
+                            return -1;
+                    }));
+                }*/
 
         private void ProcListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
