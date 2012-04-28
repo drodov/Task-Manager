@@ -1,7 +1,7 @@
 ﻿<Window x:Class="TaskManager.ShowProcInfoWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Proc Info" Height="430" Width="300">
+        Title="Proc Info" Height="Auto" Width="300">
     <Grid>
         <StackPanel>
             <StackPanel Orientation="Horizontal">
@@ -15,7 +15,7 @@
                     <ComboBoxItem Content="RealTime" />
                 </ComboBox>
             </StackPanel>
-            <Expander Header="CPU" Height="Auto" Name="CPUExpander">
+            <Expander Header="CPU" Height="Auto" Name="CPUExpander" IsExpanded="True">
                 <Grid>
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -29,7 +29,7 @@
                     </StackPanel>
                 </Grid>
             </Expander>
-            <Expander Header="Memory" Height="Auto" Name="MemExpander">
+            <Expander Header="Memory" Height="Auto" Name="MemExpander" IsExpanded="True">
                 <Grid>
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">

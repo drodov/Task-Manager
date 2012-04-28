@@ -16,6 +16,7 @@ using System.Collections;
 using System.ServiceProcess;
 using System.Management;
 using System.Threading;
+using System.Windows.Threading;
 using System.ComponentModel;
 
 
@@ -26,36 +27,111 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Collection of processes.
+        /// </summary>
         List<Proc> _procColl;
+
+        /// <summary>
+        /// Collection of apps.
+        /// </summary>
         List<CApp> _appColl;
+
+        /// <summary>
+        /// Collection of services.
+        /// </summary>
         List<CService> _servColl;
+
+        /// <summary>
+        /// Kind of sorting processes: 1 - by name; 2 - by Id; 3 - by count of threads; 4 - by priority; 5 - by description; 6 - by process's owner.
+        /// </summary>
+
         int _flagProcSort = 1;
+        /// <summary>
+        /// Kind of sorting apps: 1 - by name; 2 - by responding.
+        /// </summary>
         int _flagAppSort = 1;
+
+        /// <summary>
+        /// Kind of sorting services: 1 - by name; 2 - by process's Id; 3 - by description; 4 - by running status.
+        /// </summary>
         int _flagServSort = 1;
-        Boolean[] _directionProcSorting = new Boolean[6] { true, false, false, false, false, false };
-        Boolean[] _directionServSorting = new Boolean[4] { true, false, false, false };
-        Boolean[] _directionAppSorting = new Boolean[2] { true, false };
+
+        /// <summary>
+        /// Directions of processes sorting: true - ascending; false - descending.
+        /// </summary>
+        Boolean[] _directionProcSorting = new Boolean[6] { false, false, false, false, false, false };
+
+        /// <summary>
+        /// Directions of services sorting: true - ascending; false - descending.
+        /// </summary>
+        Boolean[] _directionServSorting = new Boolean[4] { false, false, false, false };
+
+        /// <summary>
+        /// Directions of apps sorting: true - ascending; false - descending.
+        /// </summary>
+        Boolean[] _directionAppSorting = new Boolean[2] { false, false };
+        
+        /// <summary>
+        /// Var for pointing direction of sorting in ListView.
+        /// </summary>
         ListSortDirection _direction;
+
+        /// <summary>
+        /// Total virtual memory on PC.
+        /// </summary>
+        long _totalVirtualMemory;
+
+        /// <summary>
+        /// Total physical memory on PC.
+        /// </summary>
+        long _totalPhysicalMemory = 0;
+
+        /// <summary>
+        /// Current value of using virtual memory.
+        /// </summary>
+        long _curVirtualMemory;
+
+        /// <summary>
+        /// Current value of using physical memory.
+        /// </summary>
+        long _curPhysicalMemory;
 
         public MainWindow()
         {
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High;
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // уст. приоритет нашего приложения
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Refresh list pf processes.
+        /// </summary>
         void ProcRefresh()
         {
+            _curPhysicalMemory = 0;
+            _curVirtualMemory = 0;
+            _totalPhysicalMemory = 0;
+            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT TotalVirtualMemorySize FROM Win32_OperatingSystem"); // получаеем размер вирт.памяти
+            foreach (ManagementObject obj in man.Get())
+                _totalVirtualMemory = long.Parse(obj["TotalVirtualMemorySize"].ToString());
+            man = new ManagementObjectSearcher("SELECT Capacity FROM Win32_PhysicalMemory"); // получаем объем физ. памяти
+            foreach (ManagementObject obj in man.Get())
+                _totalPhysicalMemory += long.Parse(obj["Capacity"].ToString());
             _procColl = new List<Proc>();
-            foreach (Process proc in Process.GetProcesses())
+
+            foreach (Process proc in Process.GetProcesses())    // получаем процессы
             {
                 _procColl.Add(new Proc(proc));
+                _curPhysicalMemory += proc.WorkingSet64;        // подсчет используемой физ. памяти
+                _curVirtualMemory += proc.VirtualMemorySize64;  // подсчет используемой виртуальной памяти
             }
             ProcCountLabel.Content = _procColl.Count.ToString();
+            PhMemLabel.Content = (100 * _curPhysicalMemory / _totalPhysicalMemory).ToString() + "%"; // процент используемой физ. памяти
 
-            System.Management.ManagementObjectSearcher man = new System.Management.ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor");
-            foreach (System.Management.ManagementObject obj in man.Get())
+            man = new ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor"); // CPU
+            foreach (ManagementObject obj in man.Get())
                 CPUPercentLabel.Content = obj["LoadPercentage"].ToString() + "%";
-            ProcListView.ItemsSource = _procColl;
+            ProcListView.ItemsSource = _procColl;       // указываем источник ListView
             /* switch (_flagProcSort)
              {
                  case 1: SortByName(_procColl); break;
@@ -68,10 +144,13 @@ namespace TaskManager
              }*/
         }
 
+        /// <summary>
+        /// Refresh list of apps.
+        /// </summary>
         void AppRefresh()
         {
             _appColl = new List<CApp>();
-            foreach (Process proc in Process.GetProcesses())
+            foreach (Process proc in Process.GetProcesses()) // выбираем процессы, у которых есть окна
             {
                 string[] argList = new string[] { string.Empty };
                 if (proc.MainWindowTitle != "")
@@ -85,13 +164,16 @@ namespace TaskManager
                 case 2: SortByResp(_appColl); break;
                 default: break;
             }*/
-            AppListView.ItemsSource = _appColl;
+            AppListView.ItemsSource = _appColl; // отображение приложений
         }
 
+        /// <summary>
+        /// Refresh list of services.
+        /// </summary>
         void ServRefresh()
         {
             _servColl = new List<CService>();
-            foreach (ServiceController srvc in ServiceController.GetServices())
+            foreach (ServiceController srvc in ServiceController.GetServices()) // получаем список служб
             {
                 CService s = new CService(srvc);
                 _servColl.Add(s);
@@ -104,24 +186,46 @@ namespace TaskManager
                 case 4: SortById(_servColl); break;
                 default: break;
             }*/
-            ServListView.ItemsSource = _servColl;
+            ServListView.ItemsSource = _servColl; // отображаем
         }
 
+        /// <summary>
+        /// Call process's refreshing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProcRefreshButton_Click(object sender, RoutedEventArgs e)
         {
+        //Refresh RefreshAll = new Refresh(ProcRefresh);
+        //this.ProcRefreshButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal, RefreshAll);
             ProcRefresh();
         }
 
+        /// <summary>
+        /// Call app's refreshing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AppRefreshButton_Click(object sender, RoutedEventArgs e)
         {
             AppRefresh();
         }
 
+        /// <summary>
+        /// Call serve's refreshing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ServRefreshButton_Click(object sender, RoutedEventArgs e)
         {
             ServRefresh();
         }
 
+        /// <summary>
+        /// Call starting new task.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TaskStartButton_Click(object sender, RoutedEventArgs e)
         {
             CreatProcWindow CrPrWind = new CreatProcWindow();
@@ -130,11 +234,16 @@ namespace TaskManager
             ProcRefresh();
         }
 
+        /// <summary>
+        /// Call killing of process.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProcKillButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                Process ProcToKill = (Process)(Proc)ProcListView.SelectedItem;
+                Process ProcToKill = Process.GetProcessById((ProcListView.SelectedItem as Proc).Id);
                 if (ProcToKill == null)
                     return;
                 ProcToKill.Kill();
@@ -145,6 +254,11 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Call killing of app.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AppKillButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -160,6 +274,11 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Call closing of app.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AppCloseButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -177,9 +296,13 @@ namespace TaskManager
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
         }
 
+        /// <summary>
+        /// Call list processes sorting.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GridViewProcColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource as GridViewColumnHeader == null)
@@ -320,6 +443,11 @@ namespace TaskManager
             ProcRefresh();*/
         }
 
+        /// <summary>
+        /// Call list apps sorting.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GridViewAppColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource as GridViewColumnHeader == null)
@@ -382,6 +510,11 @@ namespace TaskManager
             AppRefresh();*/
         }
 
+        /// <summary>
+        /// Call list services sorting.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GridViewServColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource as GridViewColumnHeader == null)
@@ -587,11 +720,16 @@ namespace TaskManager
                     }));
                 }*/
 
+        /// <summary>
+        /// Show selected process's additional information.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ProcListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                Process ProcToView = (Process)(ProcListView.SelectedItem as Proc);
+                Process ProcToView = Process.GetProcessById((ProcListView.SelectedItem as Proc).Id);
                 if (ProcToView != null)
                 {
                     ProcToView.PriorityClass.ToString();

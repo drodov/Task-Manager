@@ -19,7 +19,15 @@ namespace TaskManager
     /// </summary>
     public partial class ShowProcInfoWindow : Window
     {
+        /// <summary>
+        /// Selected process to view additional information. 
+        /// </summary>
         Process ProcToView;
+
+        /// <summary>
+        /// Window creation for viewing selected process.
+        /// </summary>
+        /// <param name="SelectedProc">Selected process.</param>
         public ShowProcInfoWindow(Process SelectedProc)
         {
             //try
@@ -33,15 +41,15 @@ namespace TaskManager
                 }
                 UserTimeLabel.Content = ProcToView.UserProcessorTime;
                 TotalTimeLabel.Content = ProcToView.TotalProcessorTime;
-                NonPagedSystMemLabel.Content = ProcToView.NonpagedSystemMemorySize64;
-                PagedSystMemLabel.Content = ProcToView.PagedSystemMemorySize64;
-                PagedMemLabel.Content = ProcToView.PagedMemorySize64;
-                PeakPagedMemLabel.Content = ProcToView.PeakPagedMemorySize64;
-                PeakVirtMemLabel.Content = ProcToView.PeakVirtualMemorySize64;
-                PeakWorkingSetLabel.Content = ProcToView.PeakWorkingSet64;
-                PrivateMemorySizeLabel.Content = ProcToView.PrivateMemorySize64;
-                VirtualMemorySizeLabel.Content = ProcToView.VirtualMemorySize64;
-                WorkingSetLabel.Content = ProcToView.WorkingSet64;
+                NonPagedSystMemLabel.Content = (ProcToView.NonpagedSystemMemorySize64 / 1024).ToString() + " Kb";
+                PagedSystMemLabel.Content = (ProcToView.PagedSystemMemorySize64 / 1024).ToString() + " Kb";
+                PagedMemLabel.Content = (ProcToView.PagedMemorySize64 / 1024).ToString() + " Kb";
+                PeakPagedMemLabel.Content = (ProcToView.PeakPagedMemorySize64 / 1024).ToString() + " Kb";
+                PeakVirtMemLabel.Content = (ProcToView.PeakVirtualMemorySize64 / 1024).ToString() + " Kb";
+                PeakWorkingSetLabel.Content = (ProcToView.PeakWorkingSet64 / 1024).ToString() + " Kb";
+                PrivateMemorySizeLabel.Content = (ProcToView.PrivateMemorySize64 / 1024).ToString() + " Kb";
+                VirtualMemorySizeLabel.Content = (ProcToView.VirtualMemorySize64 / 1024).ToString() + " Kb";
+                WorkingSetLabel.Content = (ProcToView.WorkingSet64 / 1024).ToString() + " Kb";
             //}
             //catch (Exception Ex)
             //{
@@ -49,6 +57,11 @@ namespace TaskManager
             //}
         }
 
+        /// <summary>
+        /// Call changing priority of selected process.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void PriorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             switch((PriorComboBox.SelectedItem as ComboBoxItem).Content.ToString().ToLower())

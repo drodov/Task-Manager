@@ -65,7 +65,7 @@
                                         <GridViewColumn Width="30" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
                                         <GridViewColumn Width="30" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
                                         <GridViewColumn Width="102" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
-                                        <GridViewColumn Width="100" Header="User" DisplayMemberBinding="{Binding Path=User}"/>
+                                        <GridViewColumn Width="100" Header="Owner" DisplayMemberBinding="{Binding Path=User}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>
@@ -112,7 +112,9 @@
                         <Label Content="CPU:" Margin="10,-5,0,0" Height="28" Name="CPULabel" />
                         <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="CPUPercentLabel"  />
                         <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border2" Width="1" />
-                    </StackPanel>
+                        <Label Content="Phys. memory:" Margin="10,-5,0,0" Height="28" Name="MemLabel" />
+                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="PhMemLabel"  />
+                </StackPanel>
                 </Grid>
             </StatusBar>
     </Grid>

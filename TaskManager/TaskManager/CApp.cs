@@ -10,12 +10,35 @@ using System.Management;
 
 namespace TaskManager
 {
+    /// <summary>
+    /// Represents apps (processes with windows).
+    /// </summary>
     class CApp
     {
+        /// <summary>
+        /// Gets the unique identifier for the process of the associated App.
+        /// </summary>
         public int Id { set; get; }
+
+        /// <summary>
+        /// Gets the name for the associated App.
+        /// </summary>
         public string Name { set; get; }
+
+        /// <summary>
+        /// Gets the responding status for the associated App.
+        /// </summary>
         public bool Status { set; get; }
+
+        /// <summary>
+        /// Gets the icon for the associated App.
+        /// </summary>
         public BitmapImage AppIcon { set; get; }
+
+        /// <summary>
+        /// Initializes a new instance of TaskManager.CApp class to the value of System.Diagnostics.Process object.
+        /// </summary>
+        /// <param name="proc">Object of System.Diagnostics.Process class of witch base TaskManager.CApp object is created.</param>
         public CApp(Process proc)
         {
             Id = proc.Id;
