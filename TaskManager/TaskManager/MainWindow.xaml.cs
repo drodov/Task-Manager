@@ -35,12 +35,12 @@ namespace TaskManager
         /// <summary>
         /// Collection of apps.
         /// </summary>
-        List<CApp> _appColl;
+        List<CApp> _appColl = new List<CApp>();
 
         /// <summary>
         /// Collection of services.
         /// </summary>
-        List<CService> _servColl;
+        List<CService> _servColl = new List<CService>();
 
         /// <summary>
         /// Kind of sorting processes: 1 - by name; 2 - by Id; 3 - by count of threads; 4 - by priority; 5 - by description; 6 - by process's owner.
@@ -108,40 +108,10 @@ namespace TaskManager
         /// </summary>
         void ProcRefresh()
         {
-            _curPhysicalMemory = 0;
             _curVirtualMemory = 0;
-            _totalPhysicalMemory = 0;
-            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT TotalVirtualMemorySize FROM Win32_OperatingSystem"); // получаеем размер вирт.памяти
-            foreach (ManagementObject obj in man.Get())
-                _totalVirtualMemory = long.Parse(obj["TotalVirtualMemorySize"].ToString());
-            man = new ManagementObjectSearcher("SELECT Capacity FROM Win32_PhysicalMemory"); // получаем объем физ. памяти
-            foreach (ManagementObject obj in man.Get())
-                _totalPhysicalMemory += long.Parse(obj["Capacity"].ToString());
-            _procColl = new List<Proc>();
-
-            foreach (Process proc in Process.GetProcesses())    // получаем процессы
-            {
-                _procColl.Add(new Proc(proc));
-                _curPhysicalMemory += proc.WorkingSet64;        // подсчет используемой физ. памяти
-                _curVirtualMemory += proc.VirtualMemorySize64;  // подсчет используемой виртуальной памяти
-            }
-            ProcCountLabel.Content = _procColl.Count.ToString();
-            PhMemLabel.Content = (100 * _curPhysicalMemory / _totalPhysicalMemory).ToString() + "%"; // процент используемой физ. памяти
-
-            man = new ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor"); // CPU
-            foreach (ManagementObject obj in man.Get())
-                CPUPercentLabel.Content = obj["LoadPercentage"].ToString() + "%";
+            _procColl = SystemInfo.GetProcessList();
+            ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
             ProcListView.ItemsSource = _procColl;       // указываем источник ListView
-            /* switch (_flagProcSort)
-             {
-                 case 1: SortByName(_procColl); break;
-                 case 2: SortById(_procColl); break;
-                 case 3: SortByThreads(_procColl); break;
-                 case 4: SortByPrior(_procColl); break;
-                 case 5: SortByThreads(_procColl); break;
-                 case 6: SortByPrior(_procColl); break;
-                 default: break;
-             }*/
         }
 
         /// <summary>
@@ -149,21 +119,7 @@ namespace TaskManager
         /// </summary>
         void AppRefresh()
         {
-            _appColl = new List<CApp>();
-            foreach (Process proc in Process.GetProcesses()) // выбираем процессы, у которых есть окна
-            {
-                string[] argList = new string[] { string.Empty };
-                if (proc.MainWindowTitle != "")
-                {
-                    _appColl.Add(new CApp(proc));
-                }
-            }/*
-            switch (_flagAppSort)
-            {
-                case 1: SortByTask(_appColl); break;
-                case 2: SortByResp(_appColl); break;
-                default: break;
-            }*/
+            _appColl = SystemInfo.GetAppList();
             AppListView.ItemsSource = _appColl; // отображение приложений
         }
 
@@ -172,21 +128,18 @@ namespace TaskManager
         /// </summary>
         void ServRefresh()
         {
-            _servColl = new List<CService>();
-            foreach (ServiceController srvc in ServiceController.GetServices()) // получаем список служб
-            {
-                CService s = new CService(srvc);
-                _servColl.Add(s);
-            }/*
-            switch (_flagServSort)
-            {
-                case 1: SortByName(_servColl); break;
-                case 2: SortByDescr(_servColl); break;
-                case 3: SortByStatus(_servColl); break;
-                case 4: SortById(_servColl); break;
-                default: break;
-            }*/
+            _servColl = SystemInfo.GetServiceList();
             ServListView.ItemsSource = _servColl; // отображаем
+        }
+
+        /// <summary>
+        /// Refresh statistics: CPU, physical usage.
+        /// </summary>
+        void StatRefresh()
+        {
+            PhMemLabel.Content = SystemInfo.GetPhysicalUsage().ToString() + "%"; // процент используемой физ. памяти
+            VirtMemLabel.Content = SystemInfo.GetVirtualUsage().ToString() + "%"; // процент используемой вирт. памяти
+            CPUPercentLabel.Content = SystemInfo.GetCPU().ToString() + "%"; // процент CPU
         }
 
         /// <summary>
@@ -200,7 +153,22 @@ namespace TaskManager
         //this.ProcRefreshButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal, RefreshAll);
             ProcRefresh();
         }
+/*
+        void RefreshThread()
+        {
+            _procColl.Clear();
+            foreach(Process proc in Process.GetProcesses())
+            {
+                ProcListView.Dispatcher.BeginInvoke(new Refresh(TempProcRefresh), new Proc(proc));
+            }
+            ProcListView.ItemsSource = _procColl;
+        }
 
+        void TempProcRefresh(Proc o)
+        {
+            _procColl.Add(o);
+        }
+*/
         /// <summary>
         /// Call app's refreshing.
         /// </summary>
@@ -228,10 +196,23 @@ namespace TaskManager
         /// <param name="e"></param>
         private void TaskStartButton_Click(object sender, RoutedEventArgs e)
         {
-            CreatProcWindow CrPrWind = new CreatProcWindow();
+            Proc ProcToStart = new Proc();
+            CApp AppToStart = new CApp();
+            CreatProcWindow CrPrWind = new CreatProcWindow(ProcToStart, AppToStart);
             CrPrWind.ShowDialog();
-            AppRefresh();
-            ProcRefresh();
+            if (ProcToStart.Id != 0)
+            {
+                _procColl.Add(ProcToStart);
+                _procColl = new List<Proc>(_procColl);
+                ProcListView.ItemsSource = _procColl;
+                if (AppToStart.Name != "")
+                {
+                    _appColl.Add(AppToStart);
+                    _appColl = new List<CApp>(_appColl);
+                    AppListView.ItemsSource = _appColl;
+                }
+            }
+
         }
 
         /// <summary>
@@ -247,7 +228,25 @@ namespace TaskManager
                 if (ProcToKill == null)
                     return;
                 ProcToKill.Kill();
-                ProcRefresh();
+                _procColl.RemoveAll((Proc a) =>
+                {
+                    if (a.Id == ProcToKill.Id)
+                        return true;
+                    else
+                        return false;
+                });
+                _procColl = new List<Proc>(_procColl);
+                ProcListView.ItemsSource = _procColl;
+
+                _appColl.RemoveAll((CApp a) =>
+                {
+                    if (a.Id == ProcToKill.Id)
+                        return true;
+                    else
+                        return false;
+                });
+                _appColl = new List<CApp>(_appColl);
+                AppListView.ItemsSource = _appColl;
             }
             catch (Exception)
             {
@@ -263,11 +262,29 @@ namespace TaskManager
         {
             try
             {
-                Process AppToKill = Process.GetProcessById((AppListView.SelectedItem as CApp).Id);
-                if (AppToKill == null)
+                Process ProcToKill = Process.GetProcessById((AppListView.SelectedItem as CApp).Id);
+                if (ProcToKill == null)
                     return;
-                AppToKill.Kill();
-                AppRefresh();
+                ProcToKill.Kill();
+                _procColl.RemoveAll((Proc a) =>
+                {
+                    if (a.Id == ProcToKill.Id)
+                        return true;
+                    else
+                        return false;
+                });
+                _procColl = new List<Proc>(_procColl);
+                ProcListView.ItemsSource = _procColl;
+
+                _appColl.RemoveAll((CApp a) =>
+                {
+                    if (a.Id == ProcToKill.Id)
+                        return true;
+                    else
+                        return false;
+                });
+                _appColl = new List<CApp>(_appColl);
+                AppListView.ItemsSource = _appColl;
             }
             catch (Exception)
             {
@@ -286,8 +303,33 @@ namespace TaskManager
                 Process ProcToClose = Process.GetProcessById((AppListView.SelectedItem as CApp).Id);
                 if (ProcToClose == null)
                     return;
-                ProcToClose.CloseMainWindow();
-                AppRefresh();
+                bool sucFlag = ProcToClose.CloseMainWindow();
+                if (sucFlag == false)
+                {
+                    AppKillButton_Click(sender, e);
+                }
+                else
+                {
+                    _procColl.RemoveAll((Proc a) =>
+                    {
+                        if (a.Id == ProcToClose.Id)
+                            return true;
+                        else
+                            return false;
+                    });
+                    _procColl = new List<Proc>(_procColl);
+                    ProcListView.ItemsSource = _procColl;
+
+                    _appColl.RemoveAll((CApp a) =>
+                    {
+                        if (a.Id == ProcToClose.Id)
+                            return true;
+                        else
+                            return false;
+                    });
+                    _appColl = new List<CApp>(_appColl);
+                    AppListView.ItemsSource = _appColl;
+                }
             }
             catch (Exception)
             {
@@ -431,16 +473,6 @@ namespace TaskManager
                     break;
                 default: break;
             }
-            /*
-            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
-            {
-                case "name": _flagProcSort = 1; break;
-                case "id": _flagProcSort = 2; break;
-                case "threads": _flagProcSort = 3; break;
-                case "priority": _flagProcSort = 4; break;
-                default: _flagProcSort = 0; break;
-            }
-            ProcRefresh();*/
         }
 
         /// <summary>
@@ -498,16 +530,6 @@ namespace TaskManager
                     break;
                 default: break;
             }
-            /*
-            if ((e.OriginalSource as GridViewColumnHeader).Content == null)
-                return;
-            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
-            {
-                case "task": _flagAppSort = 1; break;
-                case "responding": _flagAppSort = 2; break;
-                default: _flagAppSort = 0; break;
-            }
-            AppRefresh();*/
         }
 
         /// <summary>
@@ -603,122 +625,7 @@ namespace TaskManager
                     break;
                 default: break;
             }
-            /*
-            switch ((e.OriginalSource as GridViewColumnHeader).Content.ToString().ToLower())
-            {
-                case "name": _flagServSort = 1; break;
-                case "description": _flagServSort = 2; break;
-                case "status": _flagServSort = 3; break;
-                case "id": _flagServSort = 4; break;
-                default: _flagServSort = 0; break;
-            }
-            ServRefresh();*/
         }
-        /*
-                void SortByName(List<Proc> lst)
-                {
-                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-                    {
-                        return String.Compare(a.Name, b.Name);
-                    }));
-                }
-
-                void SortById(List<Proc> lst)
-                {
-                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-                    {
-                        if (a.Id > b.Id)
-                            return 1;
-                        else if (a.Id == b.Id)
-                            return 0;
-                        else
-                            return -1;
-                    }));
-                }
-
-                void SortByThreads(List<Proc> lst)
-                {
-                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-                    {
-                        if (a.ThreadsCount > b.ThreadsCount)
-                            return 1;
-                        else if (a.ThreadsCount == b.ThreadsCount)
-                            return 0;
-                        else
-                            return -1;
-                    }));
-                }
-
-                void SortByPrior(List<Proc> lst)
-                {
-                    lst.Sort(new Comparison<Proc>((Proc a, Proc b) =>
-                    {
-                        if (a.Priority > b.Priority)
-                            return 1;
-                        else if (a.Priority == b.Priority)
-                            return 0;
-                        else
-                            return -1;
-                    }));
-                }
-
-                void SortByTask(List<CApp> lst)
-                {
-                    lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
-                    {
-                        return String.Compare(a.Name, b.Name.ToString());
-                    }));
-                }
-
-                void SortByResp(List<CApp> lst)
-                {
-                    lst.Sort(new Comparison<CApp>((CApp a, CApp b) =>
-                    {
-                        if (a.Status == b.Status)
-                            return 0;
-                        else if (a.Status == false && b.Status == true)
-                            return 1;
-                        else
-                            return -1;
-                    }));
-                }
-
-                void SortByName(List<CService> lst)
-                {
-                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
-                    {
-                        return String.Compare(a.Name, b.Name);
-                    }));
-                }
-
-                void SortByDescr(List<CService> lst)
-                {
-                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
-                    {
-                        return String.Compare(a.Description, b.Description);
-                    }));
-                }
-
-                void SortByStatus(List<CService> lst)
-                {
-                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
-                    {
-                        return String.Compare(a.Status.ToString(), b.Status.ToString());
-                    }));
-                }
-
-                void SortById(List<CService> lst)
-                {
-                    lst.Sort(new Comparison<CService>((CService a, CService b) =>
-                    {
-                        if (a.Id > b.Id)
-                            return 1;
-                        else if (a.Id == b.Id)
-                            return 0;
-                        else
-                            return -1;
-                    }));
-                }*/
 
         /// <summary>
         /// Show selected process's additional information.
@@ -744,9 +651,17 @@ namespace TaskManager
 
         private void Window_Initialized(object sender, EventArgs e)
         {
+            _totalPhysicalMemory = SystemInfo.GetTotalPhysicalMemory();
+            _totalVirtualMemory = SystemInfo.GetTotalVirtualMemory();
             ProcRefresh();
             AppRefresh();
             ServRefresh();
+            StatRefresh();
+        }
+
+        private void StatRefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            StatRefresh();
         }
     }
 }

@@ -10,7 +10,7 @@ namespace TaskManager
     /// <summary>
     /// Represents services.
     /// </summary>
-    class CService
+    public class CService
     {
         /// <summary>
         /// Initializes a new instance of TaskManager.CService class to the value of System.ServiceProcess.ServiceController object.

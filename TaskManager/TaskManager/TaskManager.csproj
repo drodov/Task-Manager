@@ -92,6 +92,7 @@
     <Compile Include="ShowProcInfoWindow.xaml.cs">
       <DependentUpon>ShowProcInfoWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SystemInfo.cs" />
     <Page Include="CreatProcWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

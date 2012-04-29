@@ -72,6 +72,7 @@
                             <StackPanel Orientation="Horizontal">
                                 <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcRefreshButton"  Width="75" Click="ProcRefreshButton_Click" />
                                 <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
+                                <Button Content="Refresh %" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="StatRefreshButton"  Width="75" Click="StatRefreshButton_Click" />
                             </StackPanel>
                         </StackPanel>
                     </Grid>
@@ -103,17 +104,20 @@
                 </TabItem>
             </TabControl>
         </StackPanel>
-            <StatusBar Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
-                <Grid>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="Processes:" Margin="5,-5,0,0" Height="28" Name="ProcLabel" />
-                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="ProcCountLabel"  />
-                        <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border1" Width="1" />
-                        <Label Content="CPU:" Margin="10,-5,0,0" Height="28" Name="CPULabel" />
-                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="CPUPercentLabel"  />
-                        <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border2" Width="1" />
-                        <Label Content="Phys. memory:" Margin="10,-5,0,0" Height="28" Name="MemLabel" />
-                        <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="PhMemLabel"  />
+        <StatusBar Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
+            <Grid>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Processes:" Margin="5,-5,0,0" Height="28" Name="ProcLabel" />
+                    <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="ProcCountLabel"  />
+                    <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border1" Width="1" />
+                    <Label Content="CPU:" Margin="10,-5,0,0" Height="28" Name="CPULabel" />
+                    <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="CPUPercentLabel"  />
+                    <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border2" Width="1" />
+                    <Label Content="Phys. memory:" Margin="10,-5,0,0" Height="28" Name="PMemLabel" />
+                    <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="PhMemLabel"  />
+                    <Border BorderBrush="Silver" Margin="5,0,0,0" BorderThickness="5" Height="20" Name="border3" Width="1" />
+                    <Label Content="Virtual memory:" Margin="10,-5,0,0" Height="28" Name="VMemLabel" />
+                    <Label Content="0" Height="23" HorizontalAlignment="Left" Margin="0,-5,0,0" Name="VirtMemLabel"  />
                 </StackPanel>
                 </Grid>
             </StatusBar>

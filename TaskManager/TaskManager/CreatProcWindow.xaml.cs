@@ -19,8 +19,12 @@ namespace TaskManager
     /// </summary>
     public partial class CreatProcWindow : Window
     {
-        public CreatProcWindow()
+        CApp _appToStart;
+        Proc _procToStart;
+        public CreatProcWindow(Proc ProcToStart, CApp AppToStart)
         {
+            _procToStart = ProcToStart;
+            _appToStart = AppToStart;
             InitializeComponent();
             textBox1.Focus();
         }
@@ -29,7 +33,12 @@ namespace TaskManager
         {
             try
             {
-                Process.Start(textBox1.Text);
+                Process proc = Process.Start(textBox1.Text);
+                if (proc != null)
+                {
+                    _procToStart.CopyFromProcess(proc);
+                    _appToStart.CopyFromProcess(proc);
+                }
                 this.Close();
             }
             catch (Exception excpt)

@@ -10,12 +10,24 @@ namespace TaskManager
     /// <summary>
     /// Represents processes.
     /// </summary>
-    class Proc
+    public class Proc
     {
+        /// <summary>
+        /// Initializes a new instance of TaskManager.Proc class.
+        /// </summary>
+        public Proc()
+        {
+            Id = 0;
+            Name = "";
+            ThreadsCount = 0;
+            Priority = 0;
+            User = "";
+            Description = "";
+        }
         /// <summary>
         /// Initializes a new instance of TaskManager.Proc class to the value of System.Diagnostics.Process object.
         /// </summary>
-        /// <param name="proc">Object of System.Diagnostics.Process class of witch base TaskManager.Proc object is created.</param>
+        /// <param name="proc">Object of System.Diagnostics.Process class of which base TaskManager.Proc object is created.</param>
         public Proc(Process proc)
         {
             try
@@ -24,18 +36,7 @@ namespace TaskManager
                 Name = proc.ProcessName;
                 ThreadsCount = proc.Threads.Count;
                 Priority = proc.BasePriority;
-
-                ObjectQuery sq = new ObjectQuery
-                    ("Select * from Win32_Process Where ProcessID = '" + proc.Id.ToString() + "'"); // получаем владельца процесса
-                ManagementObjectSearcher searcher = new ManagementObjectSearcher(sq);
-                foreach (ManagementObject oReturn in searcher.Get())
-                {
-                    string[] o = new String[2];
-                    oReturn.InvokeMethod("GetOwner", (object[])o);
-                    //User = o[0] != null ? o[0] : "";
-                    User = o[0];
-                }
-
+                User = SystemInfo.GetProcessOwnerName(proc);
                 Description = proc.MainModule.FileVersionInfo.FileDescription;
             }
             catch (Exception)
@@ -73,9 +74,26 @@ namespace TaskManager
         /// Gets description of the associated process.
         /// </summary>
         public string Description { set; get; }
-        /*public static explicit operator Process(Proc p)
+
+        /// <summary>
+        /// Initializes a instance of TaskManager.Proc class to the value of System.Diagnostics.Process object.
+        /// </summary>
+        /// <param name="proc">Object of System.Diagnostics.Process class for initialization.</param>
+        public void CopyFromProcess(Process proc)
         {
-            return Process.GetProcessById(p.Id);
-        }*/
+            try
+            {
+                Id = proc.Id;
+                Name = proc.ProcessName;
+                ThreadsCount = proc.Threads.Count;
+                Priority = proc.BasePriority;
+                User = SystemInfo.GetProcessOwnerName(proc);
+                Description = proc.MainModule.FileVersionInfo.FileDescription;
+            }
+            catch (Exception)
+            {
+                Description = "";
+            }
+        }
     }
 }
