@@ -27,6 +27,12 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        int _physUsage;
+        int _virtUsage;
+        int _CPUsage;
+        Double _prevWindowHeight = 530;
+        Double _prevListViewHeight = 415;
+
         /// <summary>
         /// Collection of processes.
         /// </summary>
@@ -45,8 +51,8 @@ namespace TaskManager
         /// <summary>
         /// Kind of sorting processes: 1 - by name; 2 - by Id; 3 - by count of threads; 4 - by priority; 5 - by description; 6 - by process's owner.
         /// </summary>
-
         int _flagProcSort = 1;
+
         /// <summary>
         /// Kind of sorting apps: 1 - by name; 2 - by responding.
         /// </summary>
@@ -77,25 +83,8 @@ namespace TaskManager
         /// </summary>
         ListSortDirection _direction;
 
-        /// <summary>
-        /// Total virtual memory on PC.
-        /// </summary>
-        long _totalVirtualMemory;
-
-        /// <summary>
-        /// Total physical memory on PC.
-        /// </summary>
-        long _totalPhysicalMemory = 0;
-
-        /// <summary>
-        /// Current value of using virtual memory.
-        /// </summary>
-        long _curVirtualMemory;
-
-        /// <summary>
-        /// Current value of using physical memory.
-        /// </summary>
-        long _curPhysicalMemory;
+        BackgroundWorker _bwList = new BackgroundWorker();
+        BackgroundWorker _bwStat = new BackgroundWorker();
 
         public MainWindow()
         {
@@ -108,7 +97,6 @@ namespace TaskManager
         /// </summary>
         void ProcRefresh()
         {
-            _curVirtualMemory = 0;
             _procColl = SystemInfo.GetProcessList();
             ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
             ProcListView.ItemsSource = _procColl;       // указываем источник ListView
@@ -149,8 +137,6 @@ namespace TaskManager
         /// <param name="e"></param>
         private void ProcRefreshButton_Click(object sender, RoutedEventArgs e)
         {
-        //Refresh RefreshAll = new Refresh(ProcRefresh);
-        //this.ProcRefreshButton.Dispatcher.BeginInvoke(DispatcherPriority.Normal, RefreshAll);
             ProcRefresh();
         }
 /*
@@ -200,19 +186,18 @@ namespace TaskManager
             CApp AppToStart = new CApp();
             CreatProcWindow CrPrWind = new CreatProcWindow(ProcToStart, AppToStart);
             CrPrWind.ShowDialog();
-            if (ProcToStart.Id != 0)
+            if (ProcToStart.Id != 0) // if new task has started
             {
                 _procColl.Add(ProcToStart);
                 _procColl = new List<Proc>(_procColl);
                 ProcListView.ItemsSource = _procColl;
-                if (AppToStart.Name != "")
+                if (AppToStart.Name != "") // if new task has window
                 {
                     _appColl.Add(AppToStart);
                     _appColl = new List<CApp>(_appColl);
                     AppListView.ItemsSource = _appColl;
                 }
             }
-
         }
 
         /// <summary>
@@ -228,7 +213,7 @@ namespace TaskManager
                 if (ProcToKill == null)
                     return;
                 ProcToKill.Kill();
-                _procColl.RemoveAll((Proc a) =>
+                _procColl.RemoveAll((Proc a) => // update proc. list
                 {
                     if (a.Id == ProcToKill.Id)
                         return true;
@@ -238,7 +223,7 @@ namespace TaskManager
                 _procColl = new List<Proc>(_procColl);
                 ProcListView.ItemsSource = _procColl;
 
-                _appColl.RemoveAll((CApp a) =>
+                _appColl.RemoveAll((CApp a) => // update app. list
                 {
                     if (a.Id == ProcToKill.Id)
                         return true;
@@ -266,7 +251,7 @@ namespace TaskManager
                 if (ProcToKill == null)
                     return;
                 ProcToKill.Kill();
-                _procColl.RemoveAll((Proc a) =>
+                _procColl.RemoveAll((Proc a) => // update proc. list
                 {
                     if (a.Id == ProcToKill.Id)
                         return true;
@@ -276,7 +261,7 @@ namespace TaskManager
                 _procColl = new List<Proc>(_procColl);
                 ProcListView.ItemsSource = _procColl;
 
-                _appColl.RemoveAll((CApp a) =>
+                _appColl.RemoveAll((CApp a) => // update app. list
                 {
                     if (a.Id == ProcToKill.Id)
                         return true;
@@ -304,13 +289,13 @@ namespace TaskManager
                 if (ProcToClose == null)
                     return;
                 bool sucFlag = ProcToClose.CloseMainWindow();
-                if (sucFlag == false)
+                if (sucFlag == false) // can't close app safely
                 {
                     AppKillButton_Click(sender, e);
                 }
-                else
+                else if(Process.GetProcessById(ProcToClose.Id) == null)
                 {
-                    _procColl.RemoveAll((Proc a) =>
+                    _procColl.RemoveAll((Proc a) => // update proc. list
                     {
                         if (a.Id == ProcToClose.Id)
                             return true;
@@ -320,7 +305,7 @@ namespace TaskManager
                     _procColl = new List<Proc>(_procColl);
                     ProcListView.ItemsSource = _procColl;
 
-                    _appColl.RemoveAll((CApp a) =>
+                    _appColl.RemoveAll((CApp a) => // update app. list
                     {
                         if (a.Id == ProcToClose.Id)
                             return true;
@@ -651,17 +636,81 @@ namespace TaskManager
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            _totalPhysicalMemory = SystemInfo.GetTotalPhysicalMemory();
-            _totalVirtualMemory = SystemInfo.GetTotalVirtualMemory();
             ProcRefresh();
             AppRefresh();
             ServRefresh();
             StatRefresh();
+
+            _bwList.WorkerReportsProgress = true;
+            _bwList.WorkerSupportsCancellation = true;
+            _bwList.DoWork += new DoWorkEventHandler(bwList_DoWork);
+            _bwList.ProgressChanged += new ProgressChangedEventHandler(bwList_ProgressChanged);
+
+            _bwStat.WorkerReportsProgress = true;
+            _bwStat.WorkerSupportsCancellation = true;
+            _bwStat.DoWork += new DoWorkEventHandler(bwStat_DoWork);
+            _bwStat.ProgressChanged += new ProgressChangedEventHandler(bwStat_ProgressChanged);
+
+            _bwList.RunWorkerAsync();
+            _bwStat.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Call statistics's refresh.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StatRefreshButton_Click(object sender, RoutedEventArgs e)
         {
             StatRefresh();
+        }
+
+        private void bwList_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            while (true)
+            {
+                Thread.Sleep(5000);
+                _procColl = SystemInfo.GetProcessList();
+                //_appColl = SystemInfo.GetAppList();
+                _servColl = SystemInfo.GetServiceList();
+                _physUsage = SystemInfo.GetPhysicalUsage(); // процент используемой физ. памяти
+                _virtUsage = SystemInfo.GetVirtualUsage(); // процент используемой вирт. памяти
+                worker.ReportProgress(0);
+            }
+        }
+
+        private void bwList_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
+            ProcListView.ItemsSource = _procColl;       // указываем источник ListView
+            //AppListView.ItemsSource = _appColl;
+            ServListView.ItemsSource = _servColl;
+            PhMemLabel.Content = _physUsage.ToString() + "%"; // процент используемой физ. памяти
+            VirtMemLabel.Content = _virtUsage.ToString() + "%"; // процент используемой вирт. памяти
+        }
+
+        private void bwStat_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            while (true)
+            {
+                Thread.Sleep(1000);
+                _CPUsage = SystemInfo.GetCPU(); // процент CPU
+                worker.ReportProgress(0);
+            }
+        }
+
+        private void bwStat_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            CPUPercentLabel.Content = _CPUsage.ToString() + "%"; // процент CPU
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            AppListView.Height = _prevListViewHeight * this.ActualHeight / _prevWindowHeight;
+            _prevListViewHeight = AppListView.Height;
+            _prevWindowHeight = this.ActualHeight;
         }
     }
 }
