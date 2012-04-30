@@ -21,7 +21,6 @@ namespace TaskManager
             Name = "";
             ThreadsCount = 0;
             Priority = 0;
-            User = "";
             Description = "";
         }
         /// <summary>
@@ -36,7 +35,6 @@ namespace TaskManager
                 Name = proc.ProcessName;
                 ThreadsCount = proc.Threads.Count;
                 Priority = proc.BasePriority;
-                User = SystemInfo.GetProcessOwnerName(proc);
                 Description = proc.MainModule.FileVersionInfo.FileDescription;
             }
             catch (Exception)
@@ -66,11 +64,6 @@ namespace TaskManager
         public int Priority { set; get; }
 
         /// <summary>
-        /// Gets owner of the associated process.
-        /// </summary>
-        public string User { set; get; }
-
-        /// <summary>
         /// Gets description of the associated process.
         /// </summary>
         public string Description { set; get; }
@@ -87,7 +80,6 @@ namespace TaskManager
                 Name = proc.ProcessName;
                 ThreadsCount = proc.Threads.Count;
                 Priority = proc.BasePriority;
-                User = SystemInfo.GetProcessOwnerName(proc);
                 Description = proc.MainModule.FileVersionInfo.FileDescription;
             }
             catch (Exception)

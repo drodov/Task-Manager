@@ -19,9 +19,9 @@
                             <GradientStop Color="#FF0FB9EB" Offset="1" />
                         </LinearGradientBrush>
                     </TabItem.Background>
-                    <Grid>
-                        <StackPanel>
-                            <ListView Height="415" Margin="10,10,0,0" Name="AppListView" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
+                    <Grid VerticalAlignment="Stretch">
+                        <StackPanel VerticalAlignment="Stretch">
+                            <ListView VerticalAlignment="Stretch" MinHeight="415" Margin="10,10,0,0" Name="AppListView" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
                                 <ListView.View>
                                     <GridView>
                                         <GridView.Columns>
@@ -60,12 +60,11 @@
                                 GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler" MouseDoubleClick="ProcListView_MouseDoubleClick">
                                 <ListView.View>
                                     <GridView>
-                                        <GridViewColumn Width="75" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                        <GridViewColumn Width="90" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
                                         <GridViewColumn Width="55" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
-                                        <GridViewColumn Width="30" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
-                                        <GridViewColumn Width="30" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
-                                        <GridViewColumn Width="102" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
-                                        <GridViewColumn Width="100" Header="Owner" DisplayMemberBinding="{Binding Path=User}"/>
+                                        <GridViewColumn Width="45" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
+                                        <GridViewColumn Width="45" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
+                                        <GridViewColumn Width="159" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
                                     </GridView>
                                 </ListView.View>
                             </ListView>

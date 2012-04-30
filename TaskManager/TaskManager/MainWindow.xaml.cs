@@ -672,7 +672,6 @@ namespace TaskManager
             {
                 Thread.Sleep(5000);
                 _procColl = SystemInfo.GetProcessList();
-                //_appColl = SystemInfo.GetAppList();
                 _servColl = SystemInfo.GetServiceList();
                 _physUsage = SystemInfo.GetPhysicalUsage(); // процент используемой физ. памяти
                 _virtUsage = SystemInfo.GetVirtualUsage(); // процент используемой вирт. памяти
@@ -684,7 +683,8 @@ namespace TaskManager
         {
             ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
             ProcListView.ItemsSource = _procColl;       // указываем источник ListView
-            //AppListView.ItemsSource = _appColl;
+            _appColl = SystemInfo.GetAppList();
+            AppListView.ItemsSource = _appColl;
             ServListView.ItemsSource = _servColl;
             PhMemLabel.Content = _physUsage.ToString() + "%"; // процент используемой физ. памяти
             VirtMemLabel.Content = _virtUsage.ToString() + "%"; // процент используемой вирт. памяти

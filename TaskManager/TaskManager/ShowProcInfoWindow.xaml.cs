@@ -39,6 +39,8 @@ namespace TaskManager
                     if (val.Content.ToString() == ProcToView.PriorityClass.ToString())
                         PriorComboBox.SelectedItem = val;
                 }
+                OwnerLabel.Content = SystemInfo.GetProcessOwnerName(ProcToView);
+                StartTimeLabel.Content = ProcToView.StartTime;
                 UserTimeLabel.Content = ProcToView.UserProcessorTime;
                 TotalTimeLabel.Content = ProcToView.TotalProcessorTime;
                 NonPagedSystMemLabel.Content = (ProcToView.NonpagedSystemMemorySize64 / 1024).ToString() + " Kb";
@@ -50,6 +52,8 @@ namespace TaskManager
                 PrivateMemorySizeLabel.Content = (ProcToView.PrivateMemorySize64 / 1024).ToString() + " Kb";
                 VirtualMemorySizeLabel.Content = (ProcToView.VirtualMemorySize64 / 1024).ToString() + " Kb";
                 WorkingSetLabel.Content = (ProcToView.WorkingSet64 / 1024).ToString() + " Kb";
+                ThreadsListView.ItemsSource = ProcToView.Threads;
+                CountThreadsLabel.Content = ProcToView.Threads.Count.ToString();
             //}
             //catch (Exception Ex)
             //{
