@@ -93,7 +93,7 @@
                 <Label Content="Threads:" FontWeight="Bold" Height="28" Name="label14"/>
                 <Label Content="" Name="CountThreadsLabel"/>
             </StackPanel>
-            <ListView Height="160" Name="ThreadsListView" Margin="-10,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+            <ListView Height="160" Name="ThreadsListView" Margin="-10,0,0,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" SelectionChanged="ThreadsListView_SelectionChanged">
                 <ListView.View>
                     <GridView>
                         <GridView.Columns>
@@ -122,24 +122,16 @@
                     <Label Content="Total Time:" Name="label17"/>
                     <Label Content="" Name="ThrTotalTimeLabel"/>
                 </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Grid.Column="1">
                 <StackPanel Orientation="Horizontal">
                     <Label Content="User Time:" Name="label18"/>
                     <Label Content="" Name="ThrUserTimeLabel"/>
                 </StackPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="1">
                <StackPanel Orientation="Horizontal">
                     <Label Content="Wait Reason:" Name="label20"/>
                     <Label Content="" Name="WaitReasonLabel"/>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <Label Content="Ideal Processor:" Name="label21"/>
-                    <Label Content="" Name="IdealProcLabel"/>
-                </StackPanel>
-                <!--               <StackPanel Orientation="Horizontal">
-                    <Label Content="User Time:" Name="labwerel18"/>
-                    <Label Content="" Name="ThrUserTimwereLabel"/>
-                </StackPanel>-->
             </StackPanel>
         </Grid>
     </Grid>

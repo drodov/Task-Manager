@@ -139,22 +139,7 @@ namespace TaskManager
         {
             ProcRefresh();
         }
-/*
-        void RefreshThread()
-        {
-            _procColl.Clear();
-            foreach(Process proc in Process.GetProcesses())
-            {
-                ProcListView.Dispatcher.BeginInvoke(new Refresh(TempProcRefresh), new Proc(proc));
-            }
-            ProcListView.ItemsSource = _procColl;
-        }
 
-        void TempProcRefresh(Proc o)
-        {
-            _procColl.Add(o);
-        }
-*/
         /// <summary>
         /// Call app's refreshing.
         /// </summary>
@@ -625,7 +610,7 @@ namespace TaskManager
                 if (ProcToView != null)
                 {
                     ProcToView.PriorityClass.ToString();
-                    ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView);
+                    ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView.Id);
                     ShwPrInfWind.ShowDialog();
                 }
             }

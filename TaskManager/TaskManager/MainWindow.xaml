@@ -4,8 +4,7 @@
         Title="Task Manager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="525" MinHeight="530" Initialized="Window_Initialized" SizeChanged="Window_SizeChanged">
     <Grid>
-        <StackPanel>
-            <TabControl Name="TabControl1" TabStripPlacement="Left">
+        <TabControl Name="TabControl1" TabStripPlacement="Left">
                 <TabControl.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                         <GradientStop Color="#FFB6DDE8" Offset="0.004" />
@@ -102,7 +101,6 @@
                     </Grid>
                 </TabItem>
             </TabControl>
-        </StackPanel>
         <StatusBar Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
             <Grid>
                 <StackPanel Orientation="Horizontal">
