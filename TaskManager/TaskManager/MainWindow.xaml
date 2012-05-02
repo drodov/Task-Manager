@@ -38,8 +38,7 @@
                                 </ListView.View>
                             </ListView>
                             <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" >
-                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="AppRefreshButton"  Width="75" Click="AppRefreshButton_Click" />
-                                <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="TaskStartButton"  Width="75" Click="TaskStartButton_Click" />
+                                <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="TaskStartButton"  Width="75" Click="TaskStartButton_Click" />
                                 <Button Content="Close" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppCloseButton"  Width="75" Click="AppCloseButton_Click" />
                                 <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppKillButton"  Width="75" Click="AppKillButton_Click" />
                             </StackPanel>
@@ -67,11 +66,10 @@
                                     </GridView>
                                 </ListView.View>
                             </ListView>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcRefreshButton"  Width="75" Click="ProcRefreshButton_Click" />
-                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
-                                <Button Content="Refresh %" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="StatRefreshButton"  Width="75" Click="StatRefreshButton_Click" />
-                            </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
+                            <Button Content="Show Modules" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ShowDllButton"  Width="100" Click="ShowDllButton_Click" />
+                        </StackPanel>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -94,9 +92,6 @@
                                     </GridView>
                                 </ListView.View>
                             </ListView>
-                            <StackPanel Orientation="Horizontal">
-                                <Button Content="Refresh" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ServRefreshButton"  Width="75" Click="ServRefreshButton_Click" />
-                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </TabItem>

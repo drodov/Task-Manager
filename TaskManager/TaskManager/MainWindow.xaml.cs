@@ -131,36 +131,6 @@ namespace TaskManager
         }
 
         /// <summary>
-        /// Call process's refreshing.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ProcRefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            ProcRefresh();
-        }
-
-        /// <summary>
-        /// Call app's refreshing.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AppRefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            AppRefresh();
-        }
-
-        /// <summary>
-        /// Call serve's refreshing.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ServRefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            ServRefresh();
-        }
-
-        /// <summary>
         /// Call starting new task.
         /// </summary>
         /// <param name="sender"></param>
@@ -609,7 +579,6 @@ namespace TaskManager
                 Process ProcToView = Process.GetProcessById((ProcListView.SelectedItem as Proc).Id);
                 if (ProcToView != null)
                 {
-                    ProcToView.PriorityClass.ToString();
                     ShowProcInfoWindow ShwPrInfWind = new ShowProcInfoWindow(ProcToView.Id);
                     ShwPrInfWind.ShowDialog();
                 }
@@ -638,16 +607,6 @@ namespace TaskManager
 
             _bwList.RunWorkerAsync();
             _bwStat.RunWorkerAsync();
-        }
-
-        /// <summary>
-        /// Call statistics's refresh.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void StatRefreshButton_Click(object sender, RoutedEventArgs e)
-        {
-            StatRefresh();
         }
 
         private void bwList_DoWork(object sender, DoWorkEventArgs e)
@@ -696,6 +655,22 @@ namespace TaskManager
             AppListView.Height = _prevListViewHeight * this.ActualHeight / _prevWindowHeight;
             _prevListViewHeight = AppListView.Height;
             _prevWindowHeight = this.ActualHeight;
+        }
+
+        private void ShowDllButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Process ProcToView = Process.GetProcessById((ProcListView.SelectedItem as Proc).Id);
+                if (ProcToView != null)
+                {
+                    ShowDLLs ShowwProcDll = new ShowDLLs(ProcToView.Id);
+                    ShowwProcDll.ShowDialog();
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
