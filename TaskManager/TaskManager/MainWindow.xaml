@@ -61,14 +61,16 @@
                                         <GridViewColumn Width="90" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
                                         <GridViewColumn Width="55" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
                                         <GridViewColumn Width="45" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
-                                        <GridViewColumn Width="45" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
-                                        <GridViewColumn Width="159" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
-                                    </GridView>
+                                    <GridViewColumn Width="45" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
+                                    <GridViewColumn Width="59" Header="Responding" DisplayMemberBinding="{Binding Path=Status}"/>
+                                    <GridViewColumn Width="100" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
+                                </GridView>
                                 </ListView.View>
                             </ListView>
                         <StackPanel Orientation="Horizontal">
                             <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
                             <Button Content="Show Modules" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ShowDllButton"  Width="100" Click="ShowDllButton_Click" />
+                            <Button Content="Suspend/Resume" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="SuspResProcButton"  Width="100" Click="SuspResProcButton_Click" />
                         </StackPanel>
                         </StackPanel>
                     </Grid>

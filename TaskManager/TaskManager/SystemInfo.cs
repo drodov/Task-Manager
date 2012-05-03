@@ -84,6 +84,11 @@ namespace TaskManager
             List<Proc> procColl = new List<Proc>();
             foreach (Process proc in Process.GetProcesses())    // получаем процессы
             {
+/*                long id = prevList.First(p =>
+                    {
+                        return (p.Id == proc.Id);
+                    }).OldCpuUsage;
+                procColl.Add(new Proc(proc, id));*/
                 procColl.Add(new Proc(proc));
             }
             return procColl;

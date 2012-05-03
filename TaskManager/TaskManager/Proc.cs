@@ -22,6 +22,9 @@ namespace TaskManager
             ThreadsCount = 0;
             Priority = 0;
             Description = "";
+            Status = false;
+/*            OldCpuUsage = 0;
+            CpuUsage = 0;*/
         }
         /// <summary>
         /// Initializes a new instance of TaskManager.Proc class to the value of System.Diagnostics.Process object.
@@ -36,6 +39,9 @@ namespace TaskManager
                 ThreadsCount = proc.Threads.Count;
                 Priority = proc.BasePriority;
                 Description = proc.MainModule.FileVersionInfo.FileDescription;
+                Status = proc.Responding;
+ /*               OldCpuUsage = 0;
+                CpuUsage = 0;*/
             }
             catch (Exception)
             {
@@ -69,6 +75,15 @@ namespace TaskManager
         public string Description { set; get; }
 
         /// <summary>
+        /// Gets the responding status for the associated Proc.
+        /// </summary>
+        public bool Status { set; get; }
+/*
+        public long OldCpuUsage { set; get; }
+
+        public long CpuUsage { set; get; }*/
+
+        /// <summary>
         /// Initializes a instance of TaskManager.Proc class to the value of System.Diagnostics.Process object.
         /// </summary>
         /// <param name="proc">Object of System.Diagnostics.Process class for initialization.</param>
@@ -81,6 +96,7 @@ namespace TaskManager
                 ThreadsCount = proc.Threads.Count;
                 Priority = proc.BasePriority;
                 Description = proc.MainModule.FileVersionInfo.FileDescription;
+                Status = proc.Responding;
             }
             catch (Exception)
             {

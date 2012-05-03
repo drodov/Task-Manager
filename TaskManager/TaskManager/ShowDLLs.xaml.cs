@@ -90,5 +90,14 @@ namespace TaskManager
             }
 */
         }
+
+        private void DllsListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            ProcessModule procMod = (DllsListView.SelectedItem as ProcessModule);
+            if (procMod != null)
+            {
+                MessageBox.Show(procMod.FileVersionInfo.ToString());
+            }
+        }
     }
 }

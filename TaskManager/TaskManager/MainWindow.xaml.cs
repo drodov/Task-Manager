@@ -18,6 +18,7 @@ using System.Management;
 using System.Threading;
 using System.Windows.Threading;
 using System.ComponentModel;
+using System.Runtime.InteropServices;  
 
 
 namespace TaskManager
@@ -617,6 +618,7 @@ namespace TaskManager
                 Thread.Sleep(5000);
                 _procColl = SystemInfo.GetProcessList();
                 _servColl = SystemInfo.GetServiceList();
+                _appColl = SystemInfo.GetAppList();
                 _physUsage = SystemInfo.GetPhysicalUsage(); // процент используемой физ. памяти
                 _virtUsage = SystemInfo.GetVirtualUsage(); // процент используемой вирт. памяти
                 worker.ReportProgress(0);
@@ -627,7 +629,6 @@ namespace TaskManager
         {
             ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
             ProcListView.ItemsSource = _procColl;       // указываем источник ListView
-            _appColl = SystemInfo.GetAppList();
             AppListView.ItemsSource = _appColl;
             ServListView.ItemsSource = _servColl;
             PhMemLabel.Content = _physUsage.ToString() + "%"; // процент используемой физ. памяти
@@ -670,6 +671,79 @@ namespace TaskManager
             }
             catch (Exception)
             {
+            }
+        }
+
+        private void SuspResProcButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Proc selectProc = (ProcListView.SelectedItem as Proc);
+                if (selectProc != null)
+                {
+                    if (selectProc.Status == true)
+                        SuspendProcess(selectProc.Id);
+                    else
+                        ResumeProcess(selectProc.Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        [Flags]
+        public enum ThreadAccess : int
+        {
+            TERMINATE = (0x0001),
+            SUSPEND_RESUME = (0x0002),
+            GET_CONTEXT = (0x0008),
+            SET_CONTEXT = (0x0010),
+            SET_INFORMATION = (0x0020),
+            QUERY_INFORMATION = (0x0040),
+            SET_THREAD_TOKEN = (0x0080),
+            IMPERSONATE = (0x0100),
+            DIRECT_IMPERSONATION = (0x0200)
+        }
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+        [DllImport("kernel32.dll")]
+        static extern uint SuspendThread(IntPtr hThread);
+        [DllImport("kernel32.dll")]
+        static extern int ResumeThread(IntPtr hThread);
+
+        private void SuspendProcess(int PID)
+        {
+            Process proc = Process.GetProcessById(PID);
+            if (proc.ProcessName == string.Empty)
+                return;
+            foreach (ProcessThread pT in proc.Threads)
+            {
+                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+                if (pOpenThread == IntPtr.Zero)
+                {
+                    break;
+                }
+                SuspendThread(pOpenThread);
+            }
+        }
+
+        public void ResumeProcess(int PID)
+        {
+            Process proc = Process.GetProcessById(PID);
+            if (proc.ProcessName == string.Empty)
+                return;
+            foreach (ProcessThread pT in proc.Threads)
+            {
+                IntPtr pOpenThread = OpenThread(ThreadAccess.SUSPEND_RESUME, false, (uint)pT.Id);
+
+                if (pOpenThread == IntPtr.Zero)
+                {
+                    break;
+                }
+                ResumeThread(pOpenThread);
             }
         }
     }

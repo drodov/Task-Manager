@@ -8,7 +8,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Label Content="Modules:" FontWeight="Bold" Height="28" Name="label21"/>
-        <ListView Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Name="DllsListView">
+        <ListView Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MouseDoubleClick="DllsListView_MouseDoubleClick" Name="DllsListView">
             <ListView.View>
                 <GridView>
                         <GridView.Columns>
