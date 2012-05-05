@@ -31,8 +31,6 @@ namespace TaskManager
         int _physUsage;
         int _virtUsage;
         int _CPUsage;
-        Double _prevWindowHeight = 530;
-        Double _prevListViewHeight = 415;
 
         /// <summary>
         /// Collection of processes.
@@ -649,13 +647,6 @@ namespace TaskManager
         private void bwStat_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             CPUPercentLabel.Content = _CPUsage.ToString() + "%"; // процент CPU
-        }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            AppListView.Height = _prevListViewHeight * this.ActualHeight / _prevWindowHeight;
-            _prevListViewHeight = AppListView.Height;
-            _prevWindowHeight = this.ActualHeight;
         }
 
         private void ShowDllButton_Click(object sender, RoutedEventArgs e)

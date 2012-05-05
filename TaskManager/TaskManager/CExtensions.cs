@@ -28,6 +28,7 @@ namespace TaskManager
                 bitmapImage.BeginInit();
                 bitmapImage.StreamSource = new MemoryStream(ms.ToArray());
                 bitmapImage.EndInit();
+                bitmapImage.Freeze();
                 return bitmapImage;
             }
         }

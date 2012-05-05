@@ -2,8 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Task Manager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        d:DesignHeight="418" d:DesignWidth="525" SizeToContent="WidthAndHeight" MinWidth="525" MinHeight="530" Initialized="Window_Initialized" SizeChanged="Window_SizeChanged">
+        d:DesignHeight="418" d:DesignWidth="525" MinWidth="525" Width="525" MinHeight="530" Height="530" Initialized="Window_Initialized">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="23"/>
+        </Grid.RowDefinitions>
         <TabControl Name="TabControl1" TabStripPlacement="Left">
                 <TabControl.Background>
                     <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -19,29 +23,31 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid VerticalAlignment="Stretch">
-                        <StackPanel VerticalAlignment="Stretch">
-                            <ListView VerticalAlignment="Stretch" MinHeight="415" Margin="10,10,0,0" Name="AppListView" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
-                                <ListView.View>
-                                    <GridView>
-                                        <GridView.Columns>
-                                            <GridViewColumn Width="25">
-                                                <GridViewColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <Image  Source="{Binding AppIcon}"/>
-                                                    </DataTemplate>
-                                                </GridViewColumn.CellTemplate>
-                                            </GridViewColumn>
-                                            <GridViewColumn Width="315" Header="Apps" DisplayMemberBinding="{Binding Path=Name}"/>
-                                            <GridViewColumn Width="70" Header="Responding" DisplayMemberBinding="{Binding Path=Status}"/>
-                                        </GridView.Columns>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                            <StackPanel VerticalAlignment="Bottom" Orientation="Horizontal" >
-                                <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="TaskStartButton"  Width="75" Click="TaskStartButton_Click" />
-                                <Button Content="Close" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppCloseButton"  Width="75" Click="AppCloseButton_Click" />
-                                <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppKillButton"  Width="75" Click="AppKillButton_Click" />
-                            </StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <ListView Margin="0,0,0,0" Name="AppListView" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewAppColumnHeaderClickedHandler" >
+                            <ListView.View>
+                                <GridView>
+                                    <GridView.Columns>
+                                        <GridViewColumn Width="25">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Image  Source="{Binding AppIcon}"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Width="315" Header="Apps" DisplayMemberBinding="{Binding Path=Name}"/>
+                                        <GridViewColumn Width="70" Header="Responding" DisplayMemberBinding="{Binding Path=Status}"/>
+                                    </GridView.Columns>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top" Orientation="Horizontal" >
+                            <Button Content="Start" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="TaskStartButton"  Width="75" Click="TaskStartButton_Click" />
+                            <Button Content="Close" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppCloseButton"  Width="75" Click="AppCloseButton_Click" />
+                            <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="30,10,0,0" Name="AppKillButton"  Width="75" Click="AppKillButton_Click" />
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -53,25 +59,27 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <StackPanel>
-                            <ListView Height="415"  Margin="10,10,0,0" Name="ProcListView"  HorizontalContentAlignment="Left"
-                                GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler" MouseDoubleClick="ProcListView_MouseDoubleClick">
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Width="90" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
-                                        <GridViewColumn Width="55" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
-                                        <GridViewColumn Width="45" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <ListView Margin="0,0,0,0" Name="ProcListView"  HorizontalContentAlignment="Left"
+                            GridViewColumnHeader.Click="GridViewProcColumnHeaderClickedHandler" MouseDoubleClick="ProcListView_MouseDoubleClick">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="90" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                    <GridViewColumn Width="55" Header="ID" DisplayMemberBinding="{Binding Path=Id}"/>
+                                    <GridViewColumn Width="45" Header="Threads" DisplayMemberBinding="{Binding Path=ThreadsCount}"/>
                                     <GridViewColumn Width="45" Header="Priority" DisplayMemberBinding="{Binding Path=Priority}"/>
                                     <GridViewColumn Width="59" Header="Responding" DisplayMemberBinding="{Binding Path=Status}"/>
                                     <GridViewColumn Width="100" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
                                 </GridView>
-                                </ListView.View>
-                            </ListView>
-                        <StackPanel Orientation="Horizontal">
+                            </ListView.View>
+                        </ListView>
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top" Orientation="Horizontal">
                             <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
                             <Button Content="Show Modules" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ShowDllButton"  Width="100" Click="ShowDllButton_Click" />
                             <Button Content="Suspend/Resume" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="SuspResProcButton"  Width="100" Click="SuspResProcButton_Click" />
-                        </StackPanel>
                         </StackPanel>
                     </Grid>
                 </TabItem>
@@ -83,22 +91,20 @@
                         </LinearGradientBrush>
                     </TabItem.Background>
                     <Grid>
-                        <StackPanel>
-                            <ListView Height="415"  Margin="10,10,0,0" Name="ServListView"  HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler">
-                                <ListView.View>
-                                    <GridView>
-                                        <GridViewColumn Width="146" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
-                                        <GridViewColumn Width="40" Header="Id" DisplayMemberBinding="{Binding Path=Id}"/>
-                                        <GridViewColumn Width="147" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
-                                        <GridViewColumn Width="60" Header="Status" DisplayMemberBinding="{Binding Path=Status}"/>
-                                    </GridView>
-                                </ListView.View>
-                            </ListView>
-                        </StackPanel>
+                        <ListView Margin="0,0,0,0" Name="ServListView" HorizontalContentAlignment="Left" GridViewColumnHeader.Click="GridViewServColumnHeaderClickedHandler">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Width="146" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                    <GridViewColumn Width="40" Header="Id" DisplayMemberBinding="{Binding Path=Id}"/>
+                                    <GridViewColumn Width="147" Header="Description" DisplayMemberBinding="{Binding Path=Description}"/>
+                                    <GridViewColumn Width="60" Header="Status" DisplayMemberBinding="{Binding Path=Status}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
                     </Grid>
                 </TabItem>
             </TabControl>
-        <StatusBar Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
+        <StatusBar Grid.Row="1" Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
             <Grid>
                 <StackPanel Orientation="Horizontal">
                     <Label Content="Processes:" Margin="5,-5,0,0" Height="28" Name="ProcLabel" />
