@@ -18,7 +18,8 @@ using System.Management;
 using System.Threading;
 using System.Windows.Threading;
 using System.ComponentModel;
-using System.Runtime.InteropServices;  
+using System.Runtime.InteropServices;
+using ZedGraph;
 
 
 namespace TaskManager
@@ -28,9 +29,17 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        const int NUM_POINTS = 50;
         int _physUsage;
         int _virtUsage;
         int _CPUsage;
+        int _pageFileSize;
+        int _curPageFileSize;
+        int[] _masCPU = new int[NUM_POINTS];
+        int[] _masPageFile = new int[NUM_POINTS];
+
+        ZedGraphControl CPUZedGraph;
+        ZedGraphControl PageFileZedGraph;
 
         /// <summary>
         /// Collection of processes.
@@ -594,6 +603,24 @@ namespace TaskManager
             ServRefresh();
             StatRefresh();
 
+            CPUZedGraph = CPUWFH.Child as ZedGraphControl;
+            CPUZedGraph.GraphPane.Title.Text = "CPU";
+            CPUZedGraph.GraphPane.XAxis.Title.Text = "";
+            CPUZedGraph.GraphPane.YAxis.Title.Text = "%";
+            CPUZedGraph.GraphPane.YAxis.Scale.Max = 100;
+            CPUZedGraph.GraphPane.YAxis.Scale.Min = 0;
+            CPUZedGraph.GraphPane.XAxis.Scale.Max = 50;
+            CPUZedGraph.GraphPane.XAxis.Scale.Min = 0;
+
+            PageFileZedGraph = PageFileWFH.Child as ZedGraphControl;
+            PageFileZedGraph.GraphPane.Title.Text = "Page File Usage";
+            PageFileZedGraph.GraphPane.XAxis.Title.Text = "";
+            PageFileZedGraph.GraphPane.YAxis.Title.Text = "%";
+            PageFileZedGraph.GraphPane.YAxis.Scale.Max = 100;
+            PageFileZedGraph.GraphPane.YAxis.Scale.Min = 0;
+            PageFileZedGraph.GraphPane.XAxis.Scale.Max = 50;
+            PageFileZedGraph.GraphPane.XAxis.Scale.Min = 0;
+
             _bwList.WorkerReportsProgress = true;
             _bwList.WorkerSupportsCancellation = true;
             _bwList.DoWork += new DoWorkEventHandler(bwList_DoWork);
@@ -639,7 +666,22 @@ namespace TaskManager
             while (true)
             {
                 Thread.Sleep(1000);
-                _CPUsage = SystemInfo.GetCPU(); // процент CPU
+                _CPUsage = SystemInfo.GetCPU();                 // процент загрузки ЦП
+                _pageFileSize = SystemInfo.GetPageFileSize();   // размер файла подкачки
+                _curPageFileSize = SystemInfo.GetPageFileCurUsage(); // текущее использование файла подкачки 
+
+                for (int i = 0; i < NUM_POINTS - 1; i++)
+                {
+                    _masCPU[i] = _masCPU[i + 1];
+                    _masPageFile[i] = _masPageFile[i + 1];
+                }
+                _masCPU[NUM_POINTS - 1] = _CPUsage;
+                PrintCPUGraph();
+
+                _masPageFile[NUM_POINTS - 1] = 100 * _curPageFileSize / _pageFileSize;
+                PageFileZedGraph.GraphPane.Title.Text = "Page File\nSize: " + _pageFileSize.ToString() + " Mb\nCurrent usage: " + _curPageFileSize.ToString() + " Mb";
+                PrintPageFileGraph();
+
                 worker.ReportProgress(0);
             }
         }
@@ -647,6 +689,9 @@ namespace TaskManager
         private void bwStat_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             CPUPercentLabel.Content = _CPUsage.ToString() + "%"; // процент CPU
+            // Обновляем график
+            CPUZedGraph.Invalidate();
+            PageFileZedGraph.Invalidate();
         }
 
         private void ShowDllButton_Click(object sender, RoutedEventArgs e)
@@ -682,6 +727,34 @@ namespace TaskManager
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        void PrintCPUGraph()
+        {
+            GraphPane pane = CPUZedGraph.GraphPane;
+            pane.CurveList.Clear();
+            PointPairList list0 = new PointPairList();
+            // Заполняем список точек
+            for (int i = 0; i < NUM_POINTS; i++)
+            {
+                list0.Add(i, _masCPU[i]);
+            }
+            LineItem Curve0 = pane.AddCurve("", list0, System.Drawing.Color.Green, SymbolType.None);
+            CPUZedGraph.AxisChange();
+        }
+
+        void PrintPageFileGraph()
+        {
+            GraphPane pane = PageFileZedGraph.GraphPane;
+            pane.CurveList.Clear();
+            PointPairList list0 = new PointPairList();
+            // Заполняем список точек
+            for (int i = 0; i < NUM_POINTS; i++)
+            {
+                list0.Add(i, _masPageFile[i]);
+            }
+            LineItem Curve0 = pane.AddCurve("", list0, System.Drawing.Color.Green, SymbolType.None);
+            PageFileZedGraph.AxisChange();
         }
 
         [Flags]

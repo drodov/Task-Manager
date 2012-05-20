@@ -84,11 +84,6 @@ namespace TaskManager
             List<Proc> procColl = new List<Proc>();
             foreach (Process proc in Process.GetProcesses())    // получаем процессы
             {
-/*                long id = prevList.First(p =>
-                    {
-                        return (p.Id == proc.Id);
-                    }).OldCpuUsage;
-                procColl.Add(new Proc(proc, id));*/
                 procColl.Add(new Proc(proc));
             }
             return procColl;
@@ -177,6 +172,32 @@ namespace TaskManager
                 User = o[0] != null ? o[0] : "";
             }
             return User;
+        }
+
+        /// <summary>
+        /// Возвращает текущее использование файла подкачки в Мб.
+        /// </summary>
+        /// <returns>Текущее использование файла подкачки в Мб.</returns>
+        public static int GetPageFileCurUsage()
+        {
+            int PageFileUs = 0;
+            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT CurrentUsage  FROM Win32_PageFileUsage"); // текущее использование файла подкачки
+            foreach (ManagementObject obj in man.Get())
+                PageFileUs = Int32.Parse(obj["CurrentUsage"].ToString());
+            return PageFileUs;
+        }
+
+        /// <summary>
+        /// Возвращает размер файла подкачки в Мб.
+        /// </summary>
+        /// <returns>Размер файла подкачки в Мб.</returns>
+        public static int GetPageFileSize()
+        {
+            int PageFileSize = 0;
+            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT AllocatedBaseSize  FROM Win32_PageFileUsage"); // размер файла подкачки
+            foreach (ManagementObject obj in man.Get())
+                PageFileSize = Int32.Parse(obj["AllocatedBaseSize"].ToString());
+            return PageFileSize;
         }
     }
 }

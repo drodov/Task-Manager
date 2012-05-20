@@ -1,6 +1,7 @@
 ﻿<Window x:Class="TaskManager.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wf="clr-namespace:ZedGraph;assembly=ZedGraph"
         Title="Task Manager" mc:Ignorable="d" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         d:DesignHeight="418" d:DesignWidth="525" MinWidth="525" Width="525" MinHeight="530" Height="530" Initialized="Window_Initialized">
     <Grid>
@@ -103,7 +104,35 @@
                         </ListView>
                     </Grid>
                 </TabItem>
-            </TabControl>
+            <TabItem Header="Graphs" Height="80" Name="GraphTabItem">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                        <GradientStop Color="#FFA0DAEB" Offset="0" />
+                        <GradientStop Color="#FF0FB9EB" Offset="1" />
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <Grid>
+                    <TabControl HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="GraphsTabControl" VerticalAlignment="Stretch">
+                        <TabItem Header="CPU" Name="CPUTabItem">
+                            <Grid>
+                                <WindowsFormsHost Background="White"  Name="CPUWFH">
+                                    <wf:ZedGraphControl Name="CPUZedGraph">
+                                    </wf:ZedGraphControl>
+                                </WindowsFormsHost>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Page File" Name="PageFileTabItem">
+                            <Grid>
+                                <WindowsFormsHost Background="White"  Name="PageFileWFH">
+                                    <wf:ZedGraphControl Name="PageFileZedGraph">
+                                    </wf:ZedGraphControl>
+                                </WindowsFormsHost>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+        </TabControl>
         <StatusBar Grid.Row="1" Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
             <Grid>
                 <StackPanel Orientation="Horizontal">
