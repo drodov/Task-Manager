@@ -199,5 +199,41 @@ namespace TaskManager
                 PageFileSize = Int32.Parse(obj["AllocatedBaseSize"].ToString());
             return PageFileSize;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static CSystem GetOSInfo()
+        {
+            CSystem temp = new CSystem();
+            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem");
+            foreach (ManagementObject obj in man.Get())
+            {
+                temp.Name = obj["Caption"].ToString();
+                temp.BuildNum = obj["BuildNumber"].ToString();
+                temp.CSDVersion = obj["CSDVersion"].ToString();
+                temp.CSName = obj["CSName"].ToString();
+                temp.InstallDate = obj["InstallDate"].ToString();
+                temp.LastBootUpTime = obj["LastBootUpTime"].ToString();
+                temp.OSArchitecture = obj["OSArchitecture"].ToString();
+                temp.SerialNumber = obj["SerialNumber"].ToString();
+                temp.Version = obj["Version"].ToString();
+            }
+            return temp;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static string GetProcName()
+        {
+            string temp = "";
+            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT Name  FROM Win32_Processor");
+            foreach (ManagementObject obj in man.Get())
+                temp = obj["Name"].ToString();
+            return temp;
+        }
     }
 }

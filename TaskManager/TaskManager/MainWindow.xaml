@@ -132,6 +132,52 @@
                     </TabControl>
                 </Grid>
             </TabItem>
+            <TabItem Name="SysInfTabItem" Height="80">
+                <TabItem.Header>
+                    <StackPanel>
+                        <Label HorizontalAlignment="Center">System</Label>
+                        <Label HorizontalAlignment="Center">Info</Label>
+                    </StackPanel>
+                </TabItem.Header>
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                        <GradientStop Color="#FFA0DAEB" Offset="0" />
+                        <GradientStop Color="#FF0FB9EB" Offset="1" />
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <Label Content="OS Name" Height="28" Name="label1" />
+                        <Label Content="Build Number" Height="28" Name="label2" />
+                        <Label Content="Version" Height="28" Name="label3" />
+                        <Label Content="CSD Version" Height="28" Name="label4" />
+                        <Label Content="CS Name" Height="28" Name="label5" />
+                        <Label Content="Install Date" Height="28" Name="label6" />
+                        <Label Content="Last Boot Up Time" Height="28" Name="label7" />
+                        <Label Content="OS Architecture" Height="28" Name="label8" />
+                        <Label Content="Serial Number" Height="28" Name="label9" />
+                        <Label Content="Processor" Height="28" Name="label10" />
+                        <Label Content="RAM" Height="28" Name="label11" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1">
+                        <Label Content="OS Name" Height="28" Name="OSNameLabel" />
+                        <Label Content="Build Number" Height="28" Name="BuildNumLabel" />
+                        <Label Content="Version" Height="28" Name="VersionLabel" />
+                        <Label Content="CSD Version" Height="28" Name="CSDVersionabel" />
+                        <Label Content="CS Name" Height="28" Name="CSNameLabel" />
+                        <Label Content="Install Date" Height="28" Name="InstallDateLabel" />
+                        <Label Content="Last Boot Up Time" Height="28" Name="LastBootLabel" />
+                        <Label Content="OS Architecture" Height="28" Name="OSArchLabel" />
+                        <Label Content="Serial Number" Height="28" Name="SerialNumLabel" />
+                        <Label Content="Processor" Height="28" Name="ProcNameLabel" />
+                        <Label Content="RAM" Height="28" Name="RAMLabel" />
+                    </StackPanel>
+                </Grid>
+            </TabItem>
         </TabControl>
         <StatusBar Grid.Row="1" Height="23" Margin="0,0,0,0" VerticalAlignment="Bottom" Name="statusBar1">
             <Grid>

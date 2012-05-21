@@ -603,6 +603,22 @@ namespace TaskManager
             ServRefresh();
             StatRefresh();
 
+            // get information about OS, processor, RAM
+            CSystem syst = new CSystem(SystemInfo.GetOSInfo());
+            OSNameLabel.Content = syst.Name;
+            BuildNumLabel.Content = syst.BuildNum;
+            VersionLabel.Content = syst.Version;
+            CSDVersionabel.Content = syst.CSDVersion;
+            CSNameLabel.Content = syst.CSName;
+            string date = syst.InstallDate;
+            InstallDateLabel.Content = date.Substring(0, 4) + "." + date.Substring(4, 2) + "." + date.Substring(6, 2) + " " + date.Substring(8, 2) + ":" + date.Substring(10, 2) + ":" + date.Substring(12, 2);
+            date = syst.LastBootUpTime;
+            LastBootLabel.Content = date.Substring(0, 4) + "." + date.Substring(4, 2) + "." + date.Substring(6, 2) + " " + date.Substring(8, 2) + ":" + date.Substring(10, 2) + ":" + date.Substring(12, 2);
+            OSArchLabel.Content = syst.OSArchitecture;
+            SerialNumLabel.Content = syst.SerialNumber;
+            ProcNameLabel.Content = syst.ProcName;
+            RAMLabel.Content = syst.PhysMemory;
+
             CPUZedGraph = CPUWFH.Child as ZedGraphControl;
             CPUZedGraph.GraphPane.Title.Text = "CPU";
             CPUZedGraph.GraphPane.XAxis.Title.Text = "";
