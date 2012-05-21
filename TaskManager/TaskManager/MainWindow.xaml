@@ -121,12 +121,70 @@
                                 </WindowsFormsHost>
                             </Grid>
                         </TabItem>
+                        <TabItem Header="Phys. Memory" Name="PhysMemTabItem">
+                            <Grid>
+                                <WindowsFormsHost Background="White"  Name="PhysMemWFH">
+                                    <wf:ZedGraphControl Name="PhysMemZedGraph">
+                                    </wf:ZedGraphControl>
+                                </WindowsFormsHost>
+                            </Grid>
+                        </TabItem>
                         <TabItem Header="Page File" Name="PageFileTabItem">
                             <Grid>
                                 <WindowsFormsHost Background="White"  Name="PageFileWFH">
                                     <wf:ZedGraphControl Name="PageFileZedGraph">
                                     </wf:ZedGraphControl>
                                 </WindowsFormsHost>
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Net" Height="80" Name="NetTabItem">
+                <TabItem.Background>
+                    <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                        <GradientStop Color="#FFA0DAEB" Offset="0" />
+                        <GradientStop Color="#FF0FB9EB" Offset="1" />
+                    </LinearGradientBrush>
+                </TabItem.Background>
+                <Grid>
+                    <TabControl HorizontalAlignment="Stretch" Margin="0,0,0,0" Name="NetTabControl" VerticalAlignment="Stretch">
+                        <TabItem Header="Connections" Name="ConnectTabItem">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="75"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <StackPanel Margin="10,10,10,10">
+                                    <Label Content="Connections:" Height="28" HorizontalAlignment="Left" Name="label12" VerticalAlignment="Top" />
+                                    <StackPanel Orientation="Horizontal">
+                                        <ComboBox Height="23" Name="ConnectComboBox" Width="250" HorizontalAlignment="Left" SelectionChanged="ConnectComboBox_SelectionChanged" />
+                                        <Button Content="Refresh" Margin="20,0,0,0" Height="23" Name="RefreshConnectionsButton" Width="125" Click="RefreshConnectionsButton_Click" />
+                                    </StackPanel>
+                                </StackPanel>
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <Label Content="Interface Type" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label13" VerticalAlignment="Top" />
+                                        <Label Content="Speed" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label14" VerticalAlignment="Top" />
+                                        <Label Content="Bytes Sent" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label15" VerticalAlignment="Top" />
+                                        <Label Content="Bytes Received" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label16" VerticalAlignment="Top" />
+                                        <Label Content="Download" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label17" VerticalAlignment="Top" />
+                                        <Label Content="Upload" Height="28" HorizontalAlignment="Left" Margin="10,10,0,0" Name="label18" VerticalAlignment="Top" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2">
+                                        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="0,10,0,0" Name="InterfaceLabel" VerticalAlignment="Top" />
+                                        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="0,10,0,0" Name="SpeedLabel" VerticalAlignment="Top" />
+                                        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="0,10,0,0" Name="BSentLabel" VerticalAlignment="Top" />
+                                        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="0,10,0,0" Name="BReceivLabel" VerticalAlignment="Top" />
+                                        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="0,10,0,0" Name="DownloadLabel" VerticalAlignment="Top" />
+                                        <Label Content="" Height="28" HorizontalAlignment="Left" Margin="0,10,0,0" Name="UploadLabel" VerticalAlignment="Top" />
+                                    </StackPanel>
+                                </Grid>
                             </Grid>
                         </TabItem>
                     </TabControl>

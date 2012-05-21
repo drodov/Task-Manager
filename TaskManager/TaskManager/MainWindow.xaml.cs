@@ -20,6 +20,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using ZedGraph;
+using System.Net.NetworkInformation;
 
 
 namespace TaskManager
@@ -30,16 +31,25 @@ namespace TaskManager
     public partial class MainWindow : Window
     {
         const int NUM_POINTS = 50;
+        int _physMemSize = (int)(SystemInfo.GetTotalPhysicalMemory() / 1024 / 1024);
         int _physUsage;
         int _virtUsage;
         int _CPUsage;
         int _pageFileSize;
         int _curPageFileSize;
+        long _prevBSent = 0;
+        long _prevBReceived = 0;
         int[] _masCPU = new int[NUM_POINTS];
         int[] _masPageFile = new int[NUM_POINTS];
+        int[] _masPhysMem = new int[NUM_POINTS];
+        bool _flagShowNetSpeed = false;
 
         ZedGraphControl CPUZedGraph;
         ZedGraphControl PageFileZedGraph;
+        ZedGraphControl PhysMemZedGraph;
+
+        NetworkInterface[] _niArr;
+        NetworkInterface _niForView = null;
 
         /// <summary>
         /// Collection of processes.
@@ -93,6 +103,7 @@ namespace TaskManager
 
         BackgroundWorker _bwList = new BackgroundWorker();
         BackgroundWorker _bwStat = new BackgroundWorker();
+        BackgroundWorker _bwNet = new BackgroundWorker();
 
         public MainWindow()
         {
@@ -637,6 +648,15 @@ namespace TaskManager
             PageFileZedGraph.GraphPane.XAxis.Scale.Max = 50;
             PageFileZedGraph.GraphPane.XAxis.Scale.Min = 0;
 
+            PhysMemZedGraph = PhysMemWFH.Child as ZedGraphControl;
+            PhysMemZedGraph.GraphPane.Title.Text = "Phys. Memory Usage";
+            PhysMemZedGraph.GraphPane.XAxis.Title.Text = "";
+            PhysMemZedGraph.GraphPane.YAxis.Title.Text = "%";
+            PhysMemZedGraph.GraphPane.YAxis.Scale.Max = 100;
+            PhysMemZedGraph.GraphPane.YAxis.Scale.Min = 0;
+            PhysMemZedGraph.GraphPane.XAxis.Scale.Max = 50;
+            PhysMemZedGraph.GraphPane.XAxis.Scale.Min = 0;
+
             _bwList.WorkerReportsProgress = true;
             _bwList.WorkerSupportsCancellation = true;
             _bwList.DoWork += new DoWorkEventHandler(bwList_DoWork);
@@ -647,8 +667,21 @@ namespace TaskManager
             _bwStat.DoWork += new DoWorkEventHandler(bwStat_DoWork);
             _bwStat.ProgressChanged += new ProgressChangedEventHandler(bwStat_ProgressChanged);
 
+            _bwNet.WorkerReportsProgress = true;
+            _bwNet.WorkerSupportsCancellation = true;
+            _bwNet.DoWork += new DoWorkEventHandler(bwNet_DoWork);
+            _bwNet.ProgressChanged += new ProgressChangedEventHandler(bwNet_ProgressChanged);
+
             _bwList.RunWorkerAsync();
             _bwStat.RunWorkerAsync();
+            _bwNet.RunWorkerAsync();
+            
+            // Grab all local interfaces to this computer
+            _niArr = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (NetworkInterface ni in _niArr)
+            {
+                ConnectComboBox.Items.Add(ni.Name);
+            }
         }
 
         private void bwList_DoWork(object sender, DoWorkEventArgs e)
@@ -660,7 +693,6 @@ namespace TaskManager
                 _procColl = SystemInfo.GetProcessList();
                 _servColl = SystemInfo.GetServiceList();
                 _appColl = SystemInfo.GetAppList();
-                _physUsage = SystemInfo.GetPhysicalUsage(); // процент используемой физ. памяти
                 _virtUsage = SystemInfo.GetVirtualUsage(); // процент используемой вирт. памяти
                 worker.ReportProgress(0);
             }
@@ -685,18 +717,25 @@ namespace TaskManager
                 _CPUsage = SystemInfo.GetCPU();                 // процент загрузки ЦП
                 _pageFileSize = SystemInfo.GetPageFileSize();   // размер файла подкачки
                 _curPageFileSize = SystemInfo.GetPageFileCurUsage(); // текущее использование файла подкачки 
+                _physUsage = SystemInfo.GetPhysicalUsage(); // процент используемой физ. памяти
 
                 for (int i = 0; i < NUM_POINTS - 1; i++)
                 {
                     _masCPU[i] = _masCPU[i + 1];
                     _masPageFile[i] = _masPageFile[i + 1];
+                    _masPhysMem[i] = _masPhysMem[i + 1];
                 }
                 _masCPU[NUM_POINTS - 1] = _CPUsage;
                 PrintCPUGraph();
 
                 _masPageFile[NUM_POINTS - 1] = 100 * _curPageFileSize / _pageFileSize;
-                PageFileZedGraph.GraphPane.Title.Text = "Page File\nSize: " + _pageFileSize.ToString() + " Mb\nCurrent usage: " + _curPageFileSize.ToString() + " Mb";
+                PageFileZedGraph.GraphPane.Title.Text = "Page File Usage\nSize: " + _pageFileSize.ToString() + " Mb\nCurrent usage: " + _curPageFileSize.ToString() + " Mb";
                 PrintPageFileGraph();
+
+                _masPhysMem[NUM_POINTS - 1] = _physUsage;
+                PhysMemZedGraph.GraphPane.Title.Text = "Phys. Memory Usage\nSize: " + _physMemSize.ToString() + " Mb";
+                PrintPhysMemGraph();
+
 
                 worker.ReportProgress(0);
             }
@@ -708,6 +747,50 @@ namespace TaskManager
             // Обновляем график
             CPUZedGraph.Invalidate();
             PageFileZedGraph.Invalidate();
+        }
+
+        private void bwNet_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            while (true)
+            {
+                Thread.Sleep(1000);
+                worker.ReportProgress(0);
+            }
+        }
+
+        private void bwNet_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (ConnectComboBox.SelectedValue != null)
+            {
+                string niName = ConnectComboBox.SelectedValue.ToString();
+                for (int i = 0; i < _niArr.Length; i++)
+                {
+                    if (niName == _niArr[i].Name)
+                    {
+                        _niForView = _niArr[i];
+                        break;
+                    }
+                }
+                InterfaceLabel.Content = _niForView.NetworkInterfaceType.ToString();
+                SpeedLabel.Content = _niForView.Speed;
+                IPv4InterfaceStatistics stat = _niForView.GetIPv4Statistics();
+                BSentLabel.Content = stat.BytesSent;
+                BReceivLabel.Content = stat.BytesReceived;
+                if (_flagShowNetSpeed == true)
+                {
+                    UploadLabel.Content = ((stat.BytesSent - _prevBSent) / 1024).ToString() + " KB/s";
+                    DownloadLabel.Content = ((stat.BytesReceived - _prevBReceived) / 1024).ToString() + " KB/s";
+                }
+                else
+                {
+                    UploadLabel.Content = "";
+                    DownloadLabel.Content = "";
+                    _flagShowNetSpeed = true;
+                }
+                _prevBSent = stat.BytesSent;
+                _prevBReceived = stat.BytesReceived;
+            }
         }
 
         private void ShowDllButton_Click(object sender, RoutedEventArgs e)
@@ -773,6 +856,20 @@ namespace TaskManager
             PageFileZedGraph.AxisChange();
         }
 
+        void PrintPhysMemGraph()
+        {
+            GraphPane pane = PhysMemZedGraph.GraphPane;
+            pane.CurveList.Clear();
+            PointPairList list0 = new PointPairList();
+            // Заполняем список точек
+            for (int i = 0; i < NUM_POINTS; i++)
+            {
+                list0.Add(i, _masPhysMem[i]);
+            }
+            LineItem Curve0 = pane.AddCurve("", list0, System.Drawing.Color.Green, SymbolType.None);
+            PhysMemZedGraph.AxisChange();
+        }
+
         [Flags]
         public enum ThreadAccess : int
         {
@@ -824,6 +921,23 @@ namespace TaskManager
                     break;
                 }
                 ResumeThread(pOpenThread);
+            }
+        }
+
+        private void ConnectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _prevBReceived = 0;
+            _prevBSent = 0;
+            _flagShowNetSpeed = false;
+        }
+
+        private void RefreshConnectionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            ConnectComboBox.Items.Clear();
+            _niArr = NetworkInterface.GetAllNetworkInterfaces();
+            foreach (NetworkInterface ni in _niArr)
+            {
+                ConnectComboBox.Items.Add(ni.Name);
             }
         }
     }

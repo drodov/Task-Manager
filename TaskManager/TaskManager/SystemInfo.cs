@@ -52,7 +52,7 @@ namespace TaskManager
         /// <summary>
         /// Gets free physical memory.
         /// </summary>
-        /// <returns>Free physical memory in B.</returns>
+        /// <returns>Free physical memory in KB.</returns>
         public static long GetFreePhysicalMemory()
         {
             long freePhysicalMemory = 0;
