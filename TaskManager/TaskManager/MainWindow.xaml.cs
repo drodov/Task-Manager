@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using ZedGraph;
 using System.Net.NetworkInformation;
+using TcpUdpConnections;
 
 
 namespace TaskManager
@@ -67,6 +68,11 @@ namespace TaskManager
         List<CService> _servColl = new List<CService>();
 
         /// <summary>
+        /// Collection of sockets.
+        /// </summary>
+        List<CSocket> _socketColl = new List<CSocket>();
+
+        /// <summary>
         /// Kind of sorting processes: 1 - by name; 2 - by Id; 3 - by count of threads; 4 - by priority; 5 - by description; 6 - by process's owner.
         /// </summary>
         int _flagProcSort = 1;
@@ -109,44 +115,6 @@ namespace TaskManager
         {
             Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // уст. приоритет нашего приложения
             InitializeComponent();
-        }
-
-        /// <summary>
-        /// Refresh list pf processes.
-        /// </summary>
-        void ProcRefresh()
-        {
-            _procColl = SystemInfo.GetProcessList();
-            ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
-            ProcListView.ItemsSource = _procColl;       // указываем источник ListView
-        }
-
-        /// <summary>
-        /// Refresh list of apps.
-        /// </summary>
-        void AppRefresh()
-        {
-            _appColl = SystemInfo.GetAppList();
-            AppListView.ItemsSource = _appColl; // отображение приложений
-        }
-
-        /// <summary>
-        /// Refresh list of services.
-        /// </summary>
-        void ServRefresh()
-        {
-            _servColl = SystemInfo.GetServiceList();
-            ServListView.ItemsSource = _servColl; // отображаем
-        }
-
-        /// <summary>
-        /// Refresh statistics: CPU, physical usage.
-        /// </summary>
-        void StatRefresh()
-        {
-            PhMemLabel.Content = SystemInfo.GetPhysicalUsage().ToString() + "%"; // процент используемой физ. памяти
-            VirtMemLabel.Content = SystemInfo.GetVirtualUsage().ToString() + "%"; // процент используемой вирт. памяти
-            CPUPercentLabel.Content = SystemInfo.GetCPU().ToString() + "%"; // процент CPU
         }
 
         /// <summary>
@@ -609,10 +577,22 @@ namespace TaskManager
 
         private void Window_Initialized(object sender, EventArgs e)
         {
-            ProcRefresh();
-            AppRefresh();
-            ServRefresh();
-            StatRefresh();
+            _procColl = SystemInfo.GetProcessList();
+            ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
+            ProcListView.ItemsSource = _procColl;       // указываем источник ListView
+
+            _appColl = SystemInfo.GetAppList();
+            AppListView.ItemsSource = _appColl; // отображение приложений
+
+            _servColl = SystemInfo.GetServiceList();
+            ServListView.ItemsSource = _servColl; // отображаем
+
+            _socketColl = GetTcpUdp.GetTcpUdpList();
+            SocketListView.ItemsSource = _socketColl;
+
+            PhMemLabel.Content = SystemInfo.GetPhysicalUsage().ToString() + "%"; // процент используемой физ. памяти
+            VirtMemLabel.Content = SystemInfo.GetVirtualUsage().ToString() + "%"; // процент используемой вирт. памяти
+            CPUPercentLabel.Content = SystemInfo.GetCPU().ToString() + "%"; // процент CPU
 
             // get information about OS, processor, RAM
             CSystem syst = new CSystem(SystemInfo.GetOSInfo());
@@ -693,6 +673,7 @@ namespace TaskManager
                 _procColl = SystemInfo.GetProcessList();
                 _servColl = SystemInfo.GetServiceList();
                 _appColl = SystemInfo.GetAppList();
+                _socketColl = GetTcpUdp.GetTcpUdpList();
                 _virtUsage = SystemInfo.GetVirtualUsage(); // процент используемой вирт. памяти
                 worker.ReportProgress(0);
             }
@@ -704,6 +685,7 @@ namespace TaskManager
             ProcListView.ItemsSource = _procColl;       // указываем источник ListView
             AppListView.ItemsSource = _appColl;
             ServListView.ItemsSource = _servColl;
+            SocketListView.ItemsSource = _socketColl;
             PhMemLabel.Content = _physUsage.ToString() + "%"; // процент используемой физ. памяти
             VirtMemLabel.Content = _virtUsage.ToString() + "%"; // процент используемой вирт. памяти
         }
@@ -747,6 +729,7 @@ namespace TaskManager
             // Обновляем график
             CPUZedGraph.Invalidate();
             PageFileZedGraph.Invalidate();
+            PhysMemZedGraph.Invalidate();
         }
 
         private void bwNet_DoWork(object sender, DoWorkEventArgs e)
@@ -926,7 +909,6 @@ namespace TaskManager
 
         private void ConnectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            _prevBReceived = 0;
             _prevBSent = 0;
             _flagShowNetSpeed = false;
         }

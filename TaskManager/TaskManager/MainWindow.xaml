@@ -187,6 +187,21 @@
                                 </Grid>
                             </Grid>
                         </TabItem>
+                        <TabItem Header="Sockets" Name="SocketTabItem">
+                            <Grid>
+                                <ListView Margin="0,0,0,0" Name="SocketListView" HorizontalContentAlignment="Left">
+                                    <ListView.View>
+                                        <GridView>
+                                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=Type}"/>
+                                            <GridViewColumn Header="Local Address" DisplayMemberBinding="{Binding Path=LocalAddr}"/>
+                                            <GridViewColumn Header="Remote Address" DisplayMemberBinding="{Binding Path=RemoteAddr}"/>
+                                            <GridViewColumn Header="State" DisplayMemberBinding="{Binding Path=State}"/>
+                                            <GridViewColumn Header="Process" DisplayMemberBinding="{Binding Path=OwnProcName}"/>
+                                        </GridView>
+                                    </ListView.View>
+                                </ListView>
+                            </Grid>
+                        </TabItem>
                     </TabControl>
                 </Grid>
             </TabItem>
