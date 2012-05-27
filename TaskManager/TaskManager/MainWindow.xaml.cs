@@ -50,7 +50,10 @@ namespace TaskManager
         ZedGraphControl PhysMemZedGraph;
 
         NetworkInterface[] _niArr;
-        NetworkInterface _niForView = null;
+        NetworkInterface _niToView = null;
+
+        int? _appPIDSelect = null;
+        int? _procPIDSelect = null;
 
         /// <summary>
         /// Collection of processes.
@@ -101,7 +104,7 @@ namespace TaskManager
         /// Directions of apps sorting: true - ascending; false - descending.
         /// </summary>
         Boolean[] _directionAppSorting = new Boolean[2] { false, false };
-        
+
         /// <summary>
         /// Var for pointing direction of sorting in ListView.
         /// </summary>
@@ -235,7 +238,7 @@ namespace TaskManager
                 {
                     AppKillButton_Click(sender, e);
                 }
-                else if(Process.GetProcessById(ProcToClose.Id) == null)
+                else if (Process.GetProcessById(ProcToClose.Id) == null)
                 {
                     _procColl.RemoveAll((Proc a) => // update proc. list
                     {
@@ -655,7 +658,7 @@ namespace TaskManager
             _bwList.RunWorkerAsync();
             _bwStat.RunWorkerAsync();
             _bwNet.RunWorkerAsync();
-            
+
             // Grab all local interfaces to this computer
             _niArr = NetworkInterface.GetAllNetworkInterfaces();
             foreach (NetworkInterface ni in _niArr)
@@ -686,6 +689,28 @@ namespace TaskManager
             AppListView.ItemsSource = _appColl;
             ServListView.ItemsSource = _servColl;
             SocketListView.ItemsSource = _socketColl;
+            if (_procPIDSelect != null)
+            {
+                foreach (Proc it in ProcListView.Items)
+                {
+                    if (it.Id == _procPIDSelect)
+                    {
+                        ProcListView.SelectedValue = it;
+                        break;
+                    }
+                }
+            }
+            if (_appPIDSelect != null)
+            {
+                foreach (CApp it in AppListView.Items)
+                {
+                    if (it.Id == _appPIDSelect)
+                    {
+                        AppListView.SelectedValue = it;
+                        break;
+                    }
+                }
+            }
             PhMemLabel.Content = _physUsage.ToString() + "%"; // процент используемой физ. памяти
             VirtMemLabel.Content = _virtUsage.ToString() + "%"; // процент используемой вирт. памяти
         }
@@ -715,7 +740,7 @@ namespace TaskManager
                 PrintPageFileGraph();
 
                 _masPhysMem[NUM_POINTS - 1] = _physUsage;
-                PhysMemZedGraph.GraphPane.Title.Text = "Phys. Memory Usage\nSize: " + _physMemSize.ToString() + " Mb";
+                PhysMemZedGraph.GraphPane.Title.Text = "Phys. Memory Usage\nSize: " + _physMemSize.ToString() + " Mb\nCurrent usage: " + (_physMemSize / 100 * _physUsage).ToString() + " Mb";
                 PrintPhysMemGraph();
 
 
@@ -751,13 +776,13 @@ namespace TaskManager
                 {
                     if (niName == _niArr[i].Name)
                     {
-                        _niForView = _niArr[i];
+                        _niToView = _niArr[i];
                         break;
                     }
                 }
-                InterfaceLabel.Content = _niForView.NetworkInterfaceType.ToString();
-                SpeedLabel.Content = _niForView.Speed;
-                IPv4InterfaceStatistics stat = _niForView.GetIPv4Statistics();
+                InterfaceLabel.Content = _niToView.NetworkInterfaceType.ToString();
+                SpeedLabel.Content = _niToView.Speed;
+                IPv4InterfaceStatistics stat = _niToView.GetIPv4Statistics();
                 BSentLabel.Content = stat.BytesSent;
                 BReceivLabel.Content = stat.BytesReceived;
                 if (_flagShowNetSpeed == true)
@@ -921,6 +946,29 @@ namespace TaskManager
             {
                 ConnectComboBox.Items.Add(ni.Name);
             }
+        }
+
+        private void DumpButton_Click(object sender, RoutedEventArgs e)
+        {
+            Proc procToDump = (ProcListView.SelectedValue as Proc);
+            if (procToDump != null)
+            {
+                MiniDump.MakeDump(procToDump.Id);
+            }
+        }
+
+        private void ProcListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Proc procSelect = (ProcListView.SelectedValue as Proc);
+            if (procSelect != null)
+                _procPIDSelect = procSelect.Id;
+        }
+
+        private void AppListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CApp appSelect = (AppListView.SelectedValue as CApp);
+            if (appSelect != null)
+                _appPIDSelect = appSelect.Id;
         }
     }
 }
