@@ -175,9 +175,9 @@ namespace TaskManager
         }
 
         /// <summary>
-        /// Возвращает текущее использование файла подкачки в Мб.
+        /// Gets current using of page file in Mb.
         /// </summary>
-        /// <returns>Текущее использование файла подкачки в Мб.</returns>
+        /// <returns>Current using of page file in Mb.</returns>
         public static int GetPageFileCurUsage()
         {
             int PageFileUs = 0;
@@ -188,9 +188,9 @@ namespace TaskManager
         }
 
         /// <summary>
-        /// Возвращает размер файла подкачки в Мб.
+        /// Gets page file size in Mb.
         /// </summary>
-        /// <returns>Размер файла подкачки в Мб.</returns>
+        /// <returns>Page file size in Mb.</returns>
         public static int GetPageFileSize()
         {
             int PageFileSize = 0;
@@ -201,9 +201,9 @@ namespace TaskManager
         }
 
         /// <summary>
-        /// 
+        /// Gets some information about OS.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Some information about OS.</returns>
         public static CSystem GetOSInfo()
         {
             CSystem temp = new CSystem();
@@ -224,9 +224,9 @@ namespace TaskManager
         }
 
         /// <summary>
-        /// 
+        /// Gets some information about process.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Some information about process.</returns>
         public static string GetProcName()
         {
             string temp = "";

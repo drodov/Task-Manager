@@ -15,7 +15,7 @@ namespace TaskManager
         /// <summary>
         /// Initializes a new instance of TaskManager.CService class to the value of System.ServiceProcess.ServiceController object.
         /// </summary>
-        /// <param name="Srvc">Object of System.ServiceProcess.ServiceController class of witch base TaskManager.CService object is created</param>
+        /// <param name="Srvc">Object of System.ServiceProcess.ServiceController to initialize TaskManager.CService object.</param>
         public CService(ServiceController Srvc)
         {
             Name = Srvc.ServiceName;

@@ -22,13 +22,44 @@ namespace TaskManager
     /// </summary>
     public partial class ShowProcInfoWindow : Window
     {
+        /// <summary>
+        /// Thread for updating main fields of window.
+        /// </summary>
         BackgroundWorker _bwMainFields = new BackgroundWorker();
+
+        /// <summary>
+        /// Thread for updating information about selected thread.
+        /// </summary>
         BackgroundWorker _bwThreadFields = new BackgroundWorker();
+
+        /// <summary>
+        /// Selected thread for viewing information.
+        /// </summary>
         ProcessThread _curThread;
+
+        /// <summary>
+        /// Flag for starting updating information about selected thread.
+        /// </summary>
         Boolean _flagBwThreadRun = false;
+
+        /// <summary>
+        /// Flag of changing peocess priority.
+        /// </summary>
         Boolean _flagChangePriority = false;
+
+        /// <summary>
+        /// Flag for closing window.
+        /// </summary>
         Boolean _flagCloseWindow = false;
+
+        /// <summary>
+        /// Data about selected process.
+        /// </summary>
         String[] _procState = new String[15];
+
+        /// <summary>
+        /// Data about selected thread.
+        /// </summary>
         String[] _threadState = new String[4];
 
         /// <summary>
@@ -36,6 +67,9 @@ namespace TaskManager
         /// </summary>
         Process ProcToView;
 
+        /// <summary>
+        /// PID of selected process.
+        /// </summary>
         int ProcToViewId;
 
         /// <summary>
@@ -87,8 +121,6 @@ namespace TaskManager
         /// <summary>
         /// Call changing priority of selected process.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void PriorComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_flagChangePriority == true)
@@ -105,6 +137,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Collect information about selected process.
+        /// </summary>
         private void bwMainFields_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -143,6 +178,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Update information about selected process.
+        /// </summary>
         private void bwMainFields_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (_flagCloseWindow == true)
@@ -196,6 +234,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Collect information about selected thread.
+        /// </summary>
         private void bwThreadFields_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -226,6 +267,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Update information about selected thread.
+        /// </summary>
         private void bwThreadFields_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             ThrStartTimeLabel.Content = _threadState[0];

@@ -18,7 +18,7 @@ namespace TaskManager
         /// Converting System.Drawing.Bitmap to System.Windows.Media.Imaging.BitmapImage.
         /// </summary>
         /// <param name="bitmap">Image for converting.</param>
-        /// <returns>Coverted image.</returns>
+        /// <returns>Converted image.</returns>
         public static BitmapImage ToBitmapImage(this System.Drawing.Bitmap bitmap)
         {
             using (MemoryStream ms = new MemoryStream())

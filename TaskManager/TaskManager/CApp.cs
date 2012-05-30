@@ -60,7 +60,7 @@ namespace TaskManager
         /// <summary>
         /// Initializes a instance of TaskManager.CApp class to the value of System.Diagnostics.Process object.
         /// </summary>
-        /// <param name="proc">Object of System.Diagnostics.Process class for initialization.</param>
+        /// <param name="proc">Object of System.Diagnostics.Process class to initializate TaskManager.CApp object.</param>
         public void CopyFromProcess(Process proc)
         {
             Id = proc.Id;

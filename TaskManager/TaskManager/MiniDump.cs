@@ -9,8 +9,14 @@ using System.ComponentModel;
 
 namespace TaskManager
 {
+    /// <summary>
+    /// Represnets access to method making dump of process.
+    /// </summary>
     public static class MiniDump
     {
+        /// <summary>
+        /// Dump types.
+        /// </summary>
         [Flags]
         enum MINIDUMP_TYPE : uint
         {
@@ -36,6 +42,17 @@ namespace TaskManager
             MiniDumpWithTokenInformation = 0x00040000
         };
 
+        /// <summary>
+        /// Writes user-mode minidump information to the specified file.
+        /// </summary>
+        /// <param name="hProcess">A handle to the process for which the information is to be generated.</param>
+        /// <param name="ProcessId">The identifier of the process for which the information is to be generated.</param>
+        /// <param name="hFile">A handle to the file in which the information is to be written.</param>
+        /// <param name="DumpType">The type of information to be generated. This parameter can be one or more of the values from the MINIDUMP_TYPE enumeration.</param>
+        /// <param name="ExceptionParam">A pointer to a MINIDUMP_EXCEPTION_INFORMATION structure describing the client exception that caused the minidump to be generated.</param>
+        /// <param name="UserStreamParam">A pointer to a MINIDUMP_USER_STREAM_INFORMATION structure.</param>
+        /// <param name="CallbackParam">A pointer to a MINIDUMP_CALLBACK_INFORMATION structure that specifies a callback routine which is to receive extended minidump information.</param>
+        /// <returns>If the function succeeds, the return value is TRUE; otherwise, the return value is FALSE.</returns>
         [DllImport("DbgHelp.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool MiniDumpWriteDump(
@@ -48,6 +65,10 @@ namespace TaskManager
             IntPtr CallbackParam
             );
 
+        /// <summary>
+        /// Makes dump of process.
+        /// </summary>
+        /// <param name="procId">PID of process to be dumped.</param>
         public static void MakeDump(int procId)
         {
             using (var process = Process.GetProcessById(procId))

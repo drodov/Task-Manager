@@ -31,28 +31,104 @@ namespace TaskManager
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Number of points in grahps.
+        /// </summary>
         const int NUM_POINTS = 50;
+
+        /// <summary>
+        /// Total physical memory in MB.
+        /// </summary>
         int _physMemSize = (int)(SystemInfo.GetTotalPhysicalMemory() / 1024 / 1024);
+
+        /// <summary>
+        /// Physical memory usage.
+        /// </summary>
         int _physUsage;
+
+        /// <summary>
+        /// Virtual memory usage.
+        /// </summary>
         int _virtUsage;
+
+        /// <summary>
+        /// CPUsage.
+        /// </summary>
         int _CPUsage;
+
+        /// <summary>
+        /// Page file size.
+        /// </summary>
         int _pageFileSize;
+
+        /// <summary>
+        /// Current page file using.
+        /// </summary>
         int _curPageFileSize;
+
+        /// <summary>
+        /// Last value of sent bytes.
+        /// </summary>
         long _prevBSent = 0;
+
+        /// <summary>
+        /// Last value of received bytes.
+        /// </summary>
         long _prevBReceived = 0;
+
+        /// <summary>
+        /// Points of CPU graph.
+        /// </summary>
         int[] _masCPU = new int[NUM_POINTS];
+
+        /// <summary>
+        /// Points of page file using graph.
+        /// </summary>
         int[] _masPageFile = new int[NUM_POINTS];
+
+        /// <summary>
+        /// Points of physical memory using graph.
+        /// </summary>
         int[] _masPhysMem = new int[NUM_POINTS];
+
+        /// <summary>
+        /// Flag of show net speed.
+        /// </summary>
         bool _flagShowNetSpeed = false;
 
+        /// <summary>
+        /// Graph showing CPU.
+        /// </summary>
         ZedGraphControl CPUZedGraph;
+
+        /// <summary>
+        /// Graph showing page file using.
+        /// </summary>
         ZedGraphControl PageFileZedGraph;
+
+        /// <summary>
+        ///  Graph showing physical memory using.
+        /// </summary>
         ZedGraphControl PhysMemZedGraph;
 
+        /// <summary>
+        /// Network interfaces.
+        /// </summary>
         NetworkInterface[] _niArr;
+
+        /// <summary>
+        /// Network interface for viewing it's stats.
+        /// </summary>
         NetworkInterface _niToView = null;
 
+        /// <summary>
+        /// Selected app.
+        /// </summary>
         int? _appPIDSelect = null;
+
+        /// <summary>
+        /// Selected process.
+        /// </summary>
         int? _procPIDSelect = null;
 
         /// <summary>
@@ -110,21 +186,33 @@ namespace TaskManager
         /// </summary>
         ListSortDirection _direction;
 
+        /// <summary>
+        /// Thread for updating lists of apps, processes, services, sockets.
+        /// </summary>
         BackgroundWorker _bwList = new BackgroundWorker();
+
+        /// <summary>
+        /// Thread for updating some statistics.
+        /// </summary>
         BackgroundWorker _bwStat = new BackgroundWorker();
+
+        /// <summary>
+        /// Thread for updating information about selected net connection.
+        /// </summary>
         BackgroundWorker _bwNet = new BackgroundWorker();
 
+        /// <summary>
+        /// Initializes a instance of TaskManager.MainWindow class.
+        /// </summary>
         public MainWindow()
         {
-            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // уст. приоритет нашего приложения
+            Process.GetCurrentProcess().PriorityClass = ProcessPriorityClass.High; // set priority of our app
             InitializeComponent();
         }
 
         /// <summary>
         /// Call starting new task.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void TaskStartButton_Click(object sender, RoutedEventArgs e)
         {
             Proc ProcToStart = new Proc();
@@ -148,8 +236,6 @@ namespace TaskManager
         /// <summary>
         /// Call killing of process.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ProcKillButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -186,8 +272,6 @@ namespace TaskManager
         /// <summary>
         /// Call killing of app.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void AppKillButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -224,8 +308,6 @@ namespace TaskManager
         /// <summary>
         /// Call closing of app.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void AppCloseButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -273,8 +355,6 @@ namespace TaskManager
         /// <summary>
         /// Call list processes sorting.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void GridViewProcColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource as GridViewColumnHeader == null)
@@ -408,8 +488,6 @@ namespace TaskManager
         /// <summary>
         /// Call list apps sorting.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void GridViewAppColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource as GridViewColumnHeader == null)
@@ -465,8 +543,6 @@ namespace TaskManager
         /// <summary>
         /// Call list services sorting.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void GridViewServColumnHeaderClickedHandler(object sender, RoutedEventArgs e)
         {
             if (e.OriginalSource as GridViewColumnHeader == null)
@@ -560,8 +636,6 @@ namespace TaskManager
         /// <summary>
         /// Show selected process's additional information.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ProcListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             try
@@ -578,6 +652,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Initialize some elements of window.
+        /// </summary>
         private void Window_Initialized(object sender, EventArgs e)
         {
             _procColl = SystemInfo.GetProcessList();
@@ -667,6 +744,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Collect lists of processes, services, apps, sockets and virtual usage.
+        /// </summary>
         private void bwList_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -677,15 +757,18 @@ namespace TaskManager
                 _servColl = SystemInfo.GetServiceList();
                 _appColl = SystemInfo.GetAppList();
                 _socketColl = GetTcpUdp.GetTcpUdpList();
-                _virtUsage = SystemInfo.GetVirtualUsage(); // процент используемой вирт. памяти
+                _virtUsage = SystemInfo.GetVirtualUsage();
                 worker.ReportProgress(0);
             }
         }
 
+        /// <summary>
+        /// Update lists of processes, services, apps, sockets and virtual usage.
+        /// </summary>
         private void bwList_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            ProcCountLabel.Content = _procColl.Count.ToString(); // кол-во процессов
-            ProcListView.ItemsSource = _procColl;       // указываем источник ListView
+            ProcCountLabel.Content = _procColl.Count.ToString(); // proc num
+            ProcListView.ItemsSource = _procColl;
             AppListView.ItemsSource = _appColl;
             ServListView.ItemsSource = _servColl;
             SocketListView.ItemsSource = _socketColl;
@@ -715,6 +798,9 @@ namespace TaskManager
             VirtMemLabel.Content = _virtUsage.ToString() + "%"; // процент используемой вирт. памяти
         }
 
+        /// <summary>
+        /// Collect information about CPU and page file, physical memory usage.
+        /// </summary>
         private void bwStat_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -748,6 +834,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Show information about CPU and page file, virtual, physical memory usage.
+        /// </summary>
         private void bwStat_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             CPUPercentLabel.Content = _CPUsage.ToString() + "%"; // процент CPU
@@ -756,7 +845,10 @@ namespace TaskManager
             PageFileZedGraph.Invalidate();
             PhysMemZedGraph.Invalidate();
         }
-
+        
+        /// <summary>
+        /// Time-waiting for updating information about selected net connection.
+        /// </summary>
         private void bwNet_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -767,40 +859,59 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Update information about selected net connection.
+        /// </summary>
         private void bwNet_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if (ConnectComboBox.SelectedValue != null)
+            try
             {
-                string niName = ConnectComboBox.SelectedValue.ToString();
-                for (int i = 0; i < _niArr.Length; i++)
+                if (ConnectComboBox.SelectedValue != null)
                 {
-                    if (niName == _niArr[i].Name)
+                    string niName = ConnectComboBox.SelectedValue.ToString();
+                    for (int i = 0; i < _niArr.Length; i++)
                     {
-                        _niToView = _niArr[i];
-                        break;
+                        if (niName == _niArr[i].Name)
+                        {
+                            _niToView = _niArr[i];
+                            break;
+                        }
                     }
+                    InterfaceLabel.Content = _niToView.NetworkInterfaceType.ToString();
+                    SpeedLabel.Content = _niToView.Speed;
+                    IPv4InterfaceStatistics stat = _niToView.GetIPv4Statistics();
+                    BSentLabel.Content = stat.BytesSent;
+                    BReceivLabel.Content = stat.BytesReceived;
+                    if (_flagShowNetSpeed == true)
+                    {
+                        UploadLabel.Content = ((stat.BytesSent - _prevBSent) / 1024).ToString() + " KB/s";
+                        DownloadLabel.Content = ((stat.BytesReceived - _prevBReceived) / 1024).ToString() + " KB/s";
+                    }
+                    else
+                    {
+                        UploadLabel.Content = "";
+                        DownloadLabel.Content = "";
+                        _flagShowNetSpeed = true;
+                    }
+                    _prevBSent = stat.BytesSent;
+                    _prevBReceived = stat.BytesReceived;
                 }
-                InterfaceLabel.Content = _niToView.NetworkInterfaceType.ToString();
-                SpeedLabel.Content = _niToView.Speed;
-                IPv4InterfaceStatistics stat = _niToView.GetIPv4Statistics();
-                BSentLabel.Content = stat.BytesSent;
-                BReceivLabel.Content = stat.BytesReceived;
-                if (_flagShowNetSpeed == true)
-                {
-                    UploadLabel.Content = ((stat.BytesSent - _prevBSent) / 1024).ToString() + " KB/s";
-                    DownloadLabel.Content = ((stat.BytesReceived - _prevBReceived) / 1024).ToString() + " KB/s";
-                }
-                else
-                {
-                    UploadLabel.Content = "";
-                    DownloadLabel.Content = "";
-                    _flagShowNetSpeed = true;
-                }
-                _prevBSent = stat.BytesSent;
-                _prevBReceived = stat.BytesReceived;
+            }
+            catch(Exception)
+            {
+                UploadLabel.Content = "";
+                DownloadLabel.Content = "";
+                BReceivLabel.Content = "";
+                BSentLabel.Content = "";
+                InterfaceLabel.Content = "";
+                SpeedLabel.Content = "";
+                RefreshConnectionsButton_Click(null, null);
             }
         }
 
+        /// <summary>
+        /// Show modules of process.
+        /// </summary>
         private void ShowDllButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -817,6 +928,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Suspend/resume selected process.
+        /// </summary>
         private void SuspResProcButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -836,6 +950,9 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Draw CPU graph.
+        /// </summary>
         void PrintCPUGraph()
         {
             GraphPane pane = CPUZedGraph.GraphPane;
@@ -850,6 +967,9 @@ namespace TaskManager
             CPUZedGraph.AxisChange();
         }
 
+        /// <summary>
+        /// Draw page file using graph.
+        /// </summary>
         void PrintPageFileGraph()
         {
             GraphPane pane = PageFileZedGraph.GraphPane;
@@ -864,6 +984,9 @@ namespace TaskManager
             PageFileZedGraph.AxisChange();
         }
 
+        /// <summary>
+        /// Draw physical memory using graph.
+        /// </summary>
         void PrintPhysMemGraph()
         {
             GraphPane pane = PhysMemZedGraph.GraphPane;
@@ -878,6 +1001,9 @@ namespace TaskManager
             PhysMemZedGraph.AxisChange();
         }
 
+        /// <summary>
+        /// Thread access.
+        /// </summary>
         [Flags]
         public enum ThreadAccess : int
         {
@@ -892,13 +1018,36 @@ namespace TaskManager
             DIRECT_IMPERSONATION = (0x0200)
         }
 
+        /// <summary>
+        /// Opens an existing thread object.
+        /// </summary>
+        /// <param name="dwDesiredAccess">The access to the thread object.</param>
+        /// <param name="bInheritHandle">If this value is TRUE, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
+        /// <param name="dwThreadId">The identifier of the thread to be opened.</param>
+        /// <returns>If the function succeeds, the return value is an open handle to the specified thread. If the function fails, the return value is NULL.</returns>
         [DllImport("kernel32.dll")]
         static extern IntPtr OpenThread(ThreadAccess dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+
+        /// <summary>
+        /// Suspends the specified thread.
+        /// </summary>
+        /// <param name="hThread">A handle to the thread that is to be suspended.</param>
+        /// <returns>If the function succeeds, the return value is the thread's previous suspend count; otherwise, it is (DWORD) -1.</returns>
         [DllImport("kernel32.dll")]
         static extern uint SuspendThread(IntPtr hThread);
+
+        /// <summary>
+        /// Resumes the specified thread.
+        /// </summary>
+        /// <param name="hThread">A handle to the thread to be restarted.</param>
+        /// <returns>If the function succeeds, the return value is the thread's previous suspend count. If the function fails, the return value is (DWORD) -1.</returns>
         [DllImport("kernel32.dll")]
         static extern int ResumeThread(IntPtr hThread);
 
+        /// <summary>
+        /// Suspend process.
+        /// </summary>
+        /// <param name="PID">PID of process to suspend.</param>
         private void SuspendProcess(int PID)
         {
             Process proc = Process.GetProcessById(PID);
@@ -915,6 +1064,10 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Resume process.
+        /// </summary>
+        /// <param name="PID">PID of process to resume.</param>
         public void ResumeProcess(int PID)
         {
             Process proc = Process.GetProcessById(PID);
@@ -938,6 +1091,9 @@ namespace TaskManager
             _flagShowNetSpeed = false;
         }
 
+        /// <summary>
+        /// Call update of net connections list.
+        /// </summary>
         private void RefreshConnectionsButton_Click(object sender, RoutedEventArgs e)
         {
             ConnectComboBox.Items.Clear();
@@ -947,7 +1103,10 @@ namespace TaskManager
                 ConnectComboBox.Items.Add(ni.Name);
             }
         }
-
+        
+        /// <summary>
+        /// Call dump of selected process.
+        /// </summary>
         private void DumpButton_Click(object sender, RoutedEventArgs e)
         {
             Proc procToDump = (ProcListView.SelectedValue as Proc);

@@ -78,10 +78,6 @@ namespace TaskManager
         /// Gets the responding status for the associated Proc.
         /// </summary>
         public bool Status { set; get; }
-/*
-        public long OldCpuUsage { set; get; }
-
-        public long CpuUsage { set; get; }*/
 
         /// <summary>
         /// Initializes a instance of TaskManager.Proc class to the value of System.Diagnostics.Process object.

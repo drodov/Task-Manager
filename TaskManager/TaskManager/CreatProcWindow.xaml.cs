@@ -19,8 +19,21 @@ namespace TaskManager
     /// </summary>
     public partial class CreatProcWindow : Window
     {
+        /// <summary>
+        /// Started app.
+        /// </summary>
         CApp _appToStart;
+
+        /// <summary>
+        /// Started process.
+        /// </summary>
         Proc _procToStart;
+
+        /// <summary>
+        /// Initialization of window's elements.
+        /// </summary>
+        /// <param name="ProcToStart">Object for started process.</param>
+        /// <param name="AppToStart">Object for started app.</param>
         public CreatProcWindow(Proc ProcToStart, CApp AppToStart)
         {
             _procToStart = ProcToStart;
@@ -29,6 +42,9 @@ namespace TaskManager
             textBox1.Focus();
         }
 
+        /// <summary>
+        /// Call start new process.
+        /// </summary>
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             try

@@ -21,10 +21,30 @@ namespace TaskManager
     /// </summary>
     public partial class ShowDLLs : Window
     {
+        /// <summary>
+        /// PID of selected process to view its modules.
+        /// </summary>
         int _procToViewDllId;
+
+        /// <summary>
+        /// Flag for closing window in the case of process end.
+        /// </summary>
         Boolean _flagCloseWindow = false;
+
+        /// <summary>
+        /// Selected process to view its modules.
+        /// </summary>
         Process _procToView;
+
+        /// <summary>
+        /// Thread for updating information about modules.
+        /// </summary>
         BackgroundWorker _bw = new BackgroundWorker();
+
+        /// <summary>
+        /// Show using modules of selected process.
+        /// </summary>
+        /// <param name="procId">PID of selected process.</param>
         public ShowDLLs(int procId)
         {
             InitializeComponent();
@@ -39,6 +59,9 @@ namespace TaskManager
             _bw.RunWorkerAsync();
         }
 
+        /// <summary>
+        /// Collect information about modules.
+        /// </summary>
         private void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -61,12 +84,15 @@ namespace TaskManager
             }
         }
 
+        /// <summary>
+        /// Update list of modules.
+        /// </summary>
         private void bw_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (_flagCloseWindow == true)
             {
                 _bw.CancelAsync();
-                MessageBox.Show("Process which Dlls you're viewing has been closed!");
+                MessageBox.Show("Process which modules you're viewing has been closed!");
                 this.Close();
             }
             DllsListView.ItemsSource = _procToView.Modules;
@@ -91,6 +117,9 @@ namespace TaskManager
 */
         }
 
+        /// <summary>
+        /// Show information about selected module.
+        /// </summary>
         private void DllsListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             ProcessModule procMod = (DllsListView.SelectedItem as ProcessModule);
