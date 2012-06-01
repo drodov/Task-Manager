@@ -117,7 +117,7 @@ namespace TaskManager
         NetworkInterface[] _niArr;
 
         /// <summary>
-        /// Network interface for viewing it's stats.
+        /// Network interface for viewing its stats.
         /// </summary>
         NetworkInterface _niToView = null;
 
