@@ -698,6 +698,11 @@ namespace TaskManager
             CPUZedGraph.GraphPane.YAxis.Scale.Min = 0;
             CPUZedGraph.GraphPane.XAxis.Scale.Max = 50;
             CPUZedGraph.GraphPane.XAxis.Scale.Min = 0;
+            CPUZedGraph.GraphPane.XAxis.Scale.MaxAuto = false;
+            CPUZedGraph.GraphPane.YAxis.Scale.MaxAuto = false;
+            CPUZedGraph.GraphPane.XAxis.Scale.MinAuto = false;
+            CPUZedGraph.GraphPane.YAxis.Scale.MinAuto = false;
+            CPUZedGraph.ZoomEvent += new ZedGraphControl.ZoomEventHandler(zedGraph_ZoomEvent);
 
             PageFileZedGraph = PageFileWFH.Child as ZedGraphControl;
             PageFileZedGraph.GraphPane.Title.Text = "Page File Usage";
@@ -707,6 +712,11 @@ namespace TaskManager
             PageFileZedGraph.GraphPane.YAxis.Scale.Min = 0;
             PageFileZedGraph.GraphPane.XAxis.Scale.Max = 50;
             PageFileZedGraph.GraphPane.XAxis.Scale.Min = 0;
+            PageFileZedGraph.GraphPane.XAxis.Scale.MaxAuto = false;
+            PageFileZedGraph.GraphPane.YAxis.Scale.MaxAuto = false;
+            PageFileZedGraph.GraphPane.XAxis.Scale.MinAuto = false;
+            PageFileZedGraph.GraphPane.YAxis.Scale.MinAuto = false;
+            PageFileZedGraph.ZoomEvent += new ZedGraphControl.ZoomEventHandler(zedGraph_ZoomEvent);
 
             PhysMemZedGraph = PhysMemWFH.Child as ZedGraphControl;
             PhysMemZedGraph.GraphPane.Title.Text = "Phys. Memory Usage";
@@ -716,6 +726,11 @@ namespace TaskManager
             PhysMemZedGraph.GraphPane.YAxis.Scale.Min = 0;
             PhysMemZedGraph.GraphPane.XAxis.Scale.Max = 50;
             PhysMemZedGraph.GraphPane.XAxis.Scale.Min = 0;
+            PhysMemZedGraph.GraphPane.XAxis.Scale.MaxAuto = false;
+            PhysMemZedGraph.GraphPane.YAxis.Scale.MaxAuto = false;
+            PhysMemZedGraph.GraphPane.XAxis.Scale.MinAuto = false;
+            PhysMemZedGraph.GraphPane.YAxis.Scale.MinAuto = false;
+            PhysMemZedGraph.ZoomEvent += new ZedGraphControl.ZoomEventHandler(zedGraph_ZoomEvent);
 
             _bwList.WorkerReportsProgress = true;
             _bwList.WorkerSupportsCancellation = true;
@@ -1128,6 +1143,15 @@ namespace TaskManager
             CApp appSelect = (AppListView.SelectedValue as CApp);
             if (appSelect != null)
                 _appPIDSelect = appSelect.Id;
+        }
+        
+        void zedGraph_ZoomEvent(ZedGraphControl sender, ZoomState oldState, ZoomState newState)
+        {
+            GraphPane pane = sender.GraphPane;
+            pane.XAxis.Scale.Min = 0;
+            pane.XAxis.Scale.Max = 50;
+            pane.YAxis.Scale.Min = 0;
+            pane.YAxis.Scale.Max = 100;
         }
     }
 }

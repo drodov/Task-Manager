@@ -43,7 +43,7 @@ namespace TaskManager
         Boolean _flagBwThreadRun = false;
 
         /// <summary>
-        /// Flag of changing peocess priority.
+        /// Flag of changing process priority.
         /// </summary>
         Boolean _flagChangePriority = false;
 
