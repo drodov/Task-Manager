@@ -78,10 +78,11 @@
                             </ListView.View>
                         </ListView>
                         <StackPanel Grid.Row="1" VerticalAlignment="Top" Orientation="Horizontal">
-                            <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcKillButton"  Width="75" Click="ProcKillButton_Click" />
-                        <Button Content="Show Modules" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ShowDllButton"  Width="100" Click="ShowDllButton_Click" />
+                            <Button Content="Kill" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ProcKillButton"  Width="50" Click="ProcKillButton_Click" />
+                        <Button Content="Show Modules" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="ShowDllButton"  Width="76" Click="ShowDllButton_Click" />
                         <Button Content="Suspend/Resume" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="SuspResProcButton"  Width="100" Click="SuspResProcButton_Click" />
-                        <Button Content="Dump" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="DumpButton"  Width="100" Click="DumpButton_Click" />
+                        <Button Content="Dump" Height="23" HorizontalAlignment="Left" Margin="10,10,0,0" Name="DumpButton"  Width="60" Click="DumpButton_Click" />
+                        <Button Content="Sockets" Height="23" Name="ShowSocketButton" Margin="10,10,0,0" Width="75" Click="ShowSocketButton_Click" />
                     </StackPanel>
                     </Grid>
                 </TabItem>

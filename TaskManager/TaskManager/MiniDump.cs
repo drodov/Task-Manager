@@ -75,7 +75,7 @@ namespace TaskManager
             {
                 if (process == null)
                     return;
-                string fileName = "C:\\TaskManager\\Dump\\" + process.ProcessName + ".dmp";
+                string fileName = "C:\\" + process.ProcessName + ".dmp";
                 using (var file = File.Open(fileName, FileMode.Create, FileAccess.Write))
                 {
                     var dumpType = MINIDUMP_TYPE.MiniDumpWithFullMemory;

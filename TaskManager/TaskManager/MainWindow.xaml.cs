@@ -1117,6 +1117,13 @@ namespace TaskManager
             {
                 ConnectComboBox.Items.Add(ni.Name);
             }
+            InterfaceLabel.Content = "";
+            SpeedLabel.Content = "";
+            BSentLabel.Content = "";
+            BReceivLabel.Content = "";
+            DownloadLabel.Content = "";
+            UploadLabel.Content = "";
+            
         }
         
         /// <summary>
@@ -1152,6 +1159,19 @@ namespace TaskManager
             pane.XAxis.Scale.Max = 50;
             pane.YAxis.Scale.Min = 0;
             pane.YAxis.Scale.Max = 100;
+        }
+
+        private void ShowSocketButton_Click(object sender, RoutedEventArgs e)
+        {
+            List<CSocket> _tempList = new List<CSocket>();
+            foreach (CSocket s in _socketColl)
+            {
+                if (_procPIDSelect != null)
+                    if (s.OwnPid == _procPIDSelect)
+                        _tempList.Add(s);
+            }
+            Show_Sockets sockWin = new Show_Sockets(_tempList);
+            sockWin.ShowDialog();
         }
     }
 }

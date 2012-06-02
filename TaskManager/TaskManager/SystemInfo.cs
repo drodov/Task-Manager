@@ -128,9 +128,15 @@ namespace TaskManager
         public static int GetCPU()
         {
             int CPU = 0;
-            ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor"); // CPU
-            foreach (ManagementObject obj in man.Get())
-                CPU =  Int32.Parse(obj["LoadPercentage"].ToString());
+            try
+            {
+                ManagementObjectSearcher man = new ManagementObjectSearcher("SELECT LoadPercentage  FROM Win32_Processor"); // CPU
+                foreach (ManagementObject obj in man.Get())
+                    CPU = Int32.Parse(obj["LoadPercentage"].ToString());
+            }
+            catch (Exception)
+            {
+            }
             return CPU;
         }
 
